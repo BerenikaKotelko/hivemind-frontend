@@ -16,13 +16,6 @@ export default function SearchBar() {
     "Jest",
   ]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const users = [
-    "Matt Phan",
-    "Jamie Lou",
-    "Beri Kotelko",
-    "Grace Zaborski",
-    "Someones Name is Very Long",
-  ];
 
   function handleTagClick(tag: string) {
     setTags([...tags.filter((element) => element !== tag)]);
@@ -132,7 +125,7 @@ export default function SearchBar() {
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="selectedTags">
-                  <p>Selected: </p>
+                  <p>Selected tags: </p>
                   {selectedTags.map((tag, index) => (
                     <span
                       key={index}
