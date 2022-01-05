@@ -2,6 +2,14 @@
   text-decoration: none;
 }
 
-.active-tab {
-  color: red;
+.navbar-nav {
+  align-items: baseline;
+}
+
+.hivemind-title {
+  margin-right: 20px;
+}
+
+.sign-out-btn {
+  margin-left: 10px;
 }

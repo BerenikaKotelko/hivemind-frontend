@@ -4,10 +4,11 @@ import { useState } from "react";
 
 function App() {
   const [users, setUsers] = useState<string[]>([
-    "Matt",
-    "Jamie",
-    "Beri",
-    "Grace",
+    "Matt Phan",
+    "Jamie Lou",
+    "Beri Kotelko",
+    "Grace Zaborski",
+    "Someones Name is Very Long",
   ]);
   const [currentUser, setCurrentUser] = useState<string>("");
   return (
