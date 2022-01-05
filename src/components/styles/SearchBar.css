@@ -1,0 +1,12 @@
+.filterTags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-badge {
+  margin: 2px;
+}
+
+.tag-react {
+  color: blueviolet;
+}

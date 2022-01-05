@@ -10,7 +10,7 @@ interface NavBarProps {
 function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
   const location = useLocation();
   return (
-    <div>
+    <div className="navbar-container">
       <nav className="navbar navbar-expand-lg navbar-light bg-warning">
         <div className="container-fluid">
           <div className="hivemind-title">
