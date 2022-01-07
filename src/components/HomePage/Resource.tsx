@@ -1,6 +1,7 @@
 import "../styles/Resource.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { IUser } from "../../interfaces/IUser";
 
 interface IResource {
   id: number;
@@ -15,7 +16,7 @@ interface IResource {
 
 interface ResourceProps {
   resource: IResource;
-  currentUser: string;
+  currentUser: IUser | undefined;
 }
 
 const tags = [
@@ -58,7 +59,7 @@ const comments = [
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const showSignInError = (str: string) => {
-    currentUser === "" && toast.error(str);
+    currentUser && toast.error(str);
   };
   return (
     <div className="resource">
@@ -138,7 +139,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                     👎
                   </button>
                   <div className="add-study-list-toggle form-check form-switch ">
-                    {currentUser === "" ? (
+                    {currentUser ? (
                       <input
                         className="form-check-input"
                         type="checkbox"

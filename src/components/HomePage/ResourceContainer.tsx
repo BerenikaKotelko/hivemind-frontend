@@ -1,5 +1,5 @@
 import Resource from "./Resource";
-
+import { IUser } from "../../interfaces/IUser";
 const resources = [
   {
     id: 1,
@@ -37,7 +37,7 @@ const resources = [
 ];
 
 interface ResourceContainerProps {
-  currentUser: string;
+  currentUser: IUser | undefined;
 }
 
 function ResourceContainer({ currentUser }: ResourceContainerProps) {

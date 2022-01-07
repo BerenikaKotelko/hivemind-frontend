@@ -1,9 +1,9 @@
-import React from "react";
 import SearchBar from "./SearchBar";
 import ResourceContainer from "./ResourceContainer";
+import { IUser } from "../../interfaces/IUser";
 
 interface HomePageProps {
-  currentUser: string;
+  currentUser: IUser | undefined;
 }
 
 function HomePage({ currentUser }: HomePageProps) {
