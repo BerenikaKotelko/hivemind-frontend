@@ -2,7 +2,7 @@ import "../styles/Resource.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-interface Resource {
+interface IResource {
   id: number;
   author_id: number;
   title: string;
@@ -14,7 +14,7 @@ interface Resource {
 }
 
 interface ResourceProps {
-  resource: Resource;
+  resource: IResource;
   currentUser: string;
 }
 
