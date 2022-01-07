@@ -1,6 +1,7 @@
 import Resource from "./Resource";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
+import filterResource from "../../utils/filterResource";
 // const resources = [
 //   {
 //     id: 1,
@@ -40,17 +41,22 @@ import { IResource } from "../../interfaces/IResource";
 interface ResourceContainerProps {
   currentUser: IUser | undefined;
   resources: IResource[];
+  searchTerm: string;
 }
 
-function ResourceContainer({ currentUser, resources }: ResourceContainerProps) {
+function ResourceContainer({
+  currentUser,
+  resources,
+  searchTerm,
+}: ResourceContainerProps) {
+  const filteredResources = resources.filter((resource) =>
+    filterResource(searchTerm, resource.title, resource.description)
+  );
+
   return (
     <div>
-      {resources.map((resource) => (
-        <Resource
-          key={resource.id}
-          resource={resource}
-          currentUser={currentUser}
-        />
+      {filteredResources.map((resource, idx) => (
+        <Resource key={idx} resource={resource} currentUser={currentUser} />
       ))}
     </div>
   );
