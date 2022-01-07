@@ -114,7 +114,7 @@ export default function SearchBar({
                     >
                       <option value="0">Choose value...</option>
                       <option value="1">Un-bee-liveable</option>
-                      <option value="2">Promising</option>
+                      <option value="2">May-bee</option>
                       <option value="3">Buzzkill</option>
                     </select>
                   </div>
