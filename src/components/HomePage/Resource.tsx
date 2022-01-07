@@ -2,17 +2,8 @@ import "../styles/Resource.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
-
-interface IResource {
-  id: number;
-  author_id: number;
-  title: string;
-  description: string;
-  recommended: string;
-  URL: string;
-  date_added: string;
-  likes: string;
-}
+import { IResource } from "../../interfaces/IResource";
+import timestampConverter from "../../utils/timestampConverter";
 
 interface ResourceProps {
   resource: IResource;
@@ -111,7 +102,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
             </div>
             <div className="modal-body">
               <div className="resource-header">
-                <p>Created {resource.date_added}</p>
+                <p>Created {timestampConverter(resource.date_added)}</p>
                 <p>Added by {resource.author_id}</p>
                 <div className="header-buttons">
                   <button
