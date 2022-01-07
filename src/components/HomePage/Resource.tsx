@@ -35,22 +35,15 @@ const tags = [
 ];
 
 const comments = [
-  "yo",
-  "this",
-  "is",
-  "sick",
-  "comments",
-  "what?!",
-  "this",
-  "app",
-  "is",
-  "sickk",
+  "Hey! this is a really useful resource, thanks for sharing :)",
+  "Wow I've never thought about it this way before.",
+  "I agree, this resource is bee-rilliant",
 ];
 
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const showSignInError = (str: string) => {
-    currentUser && toast.error(str);
+    currentUser ?? toast.error(str);
   };
   return (
     <div className="resource">
@@ -169,6 +162,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
               </div>
               <hr className="dropdown-divider" />
               <div className="resource-body">
+                <a href={resource.url}>{resource.url}</a>
+                <br />
                 <p>{resource.description}</p>
               </div>
               <hr className="dropdown-divider" />
@@ -203,7 +198,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                           className="list-group-item d-flex justify-content-between align-items-start"
                         >
                           <div className="ms-2 me-auto">
-                            <div className="fw-bold">bob</div>
+                            <div className="fw-bold">Barack Obama</div>
                             {comment}
                           </div>
                           <span className="badge bg-primary rounded-pill">
