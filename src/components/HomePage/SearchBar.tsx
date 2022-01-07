@@ -1,7 +1,15 @@
 import { useState } from "react";
 import "../styles/SearchBar.css";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function SearchBar({
+  searchTerm,
+  setSearchTerm,
+}: SearchBarProps) {
   const [tags, setTags] = useState<string[]>([
     "React",
     "Javascript",
@@ -34,13 +42,15 @@ export default function SearchBar() {
           type="search"
           placeholder="Search"
           aria-label="Search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button
+        {/* <button
           className="btn btn-outline-success search-btn me-2"
           type="submit"
         >
           Search
-        </button>
+        </button> */}
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
@@ -104,7 +114,7 @@ export default function SearchBar() {
                     >
                       <option value="0">Choose value...</option>
                       <option value="1">Un-bee-liveable</option>
-                      <option value="2">Promising</option>
+                      <option value="2">May-bee</option>
                       <option value="3">Buzzkill</option>
                     </select>
                   </div>

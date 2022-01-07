@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import "./styles/NavBar.css";
+import { IUser } from "../interfaces/IUser";
 
 interface NavBarProps {
-  users: string[];
-  currentUser: string;
-  setCurrentUser: React.Dispatch<React.SetStateAction<string>>;
+  users: IUser[];
+  currentUser: IUser | undefined;
+  setCurrentUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }
 
 function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
@@ -53,7 +54,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
               </li>
             </ul>
           </div>
-          {currentUser === "" ? (
+          {!currentUser ? (
             <div className="dropstart">
               <button
                 className="sign-in-btn btn btn-success btn-sm dropdown-toggle"
@@ -68,8 +69,8 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton1"
               >
-                {users.map((user, i) => (
-                  <li key={i}>
+                {users.map((user) => (
+                  <li key={user.id}>
                     <button
                       type="button"
                       className="dropdown-item"
@@ -77,7 +78,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                         setCurrentUser(user);
                       }}
                     >
-                      {user}
+                      {user.name}
                     </button>
                   </li>
                 ))}
@@ -86,11 +87,11 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
           ) : (
             <>
               <div>
-                <small>Signed in as </small> <strong>{currentUser}</strong>{" "}
+                <small>Signed in as </small> <strong>{currentUser.name}</strong>{" "}
               </div>
               <button
                 className="sign-out-btn btn btn-danger btn-sm"
-                onClick={() => setCurrentUser("")}
+                onClick={() => setCurrentUser(undefined)}
               >
                 Sign out
               </button>
