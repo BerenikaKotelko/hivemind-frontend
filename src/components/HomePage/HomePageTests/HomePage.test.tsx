@@ -35,7 +35,7 @@ const props = {
   ],
 };
 
-test("loads items eventually", async () => {
+test.skip("loads items eventually", async () => {
   const div = document.createElement("div");
   //bob?
   ReactDOM.render(<HomePage {...props} />, div);
