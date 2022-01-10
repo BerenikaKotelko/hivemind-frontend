@@ -12,7 +12,7 @@ interface HomePageProps {
 function HomePage({ currentUser, resources }: HomePageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   return (
-    <div className="container">
+    <div className="container" data-testid="homepage">
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <ResourceContainer
         currentUser={currentUser}
