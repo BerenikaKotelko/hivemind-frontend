@@ -43,10 +43,11 @@ const comments = [
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const showSignInError = (str: string) => {
+    //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
   };
   return (
-    <div className="resource">
+    <div className="resource" data-testid={`resource${resource.id}`}>
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">{resource.title}</h5>
@@ -122,6 +123,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                   >
                     👎
                   </button>
+                  {/* toggle for adding to to-study list */}
                   <div className="add-study-list-toggle form-check form-switch ">
                     {currentUser ? (
                       <input
@@ -131,6 +133,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                         id="flexSwitchCheckChecked"
                         disabled
                       />
+                      //should disabled be below?
                     ) : (
                       <input
                         className="form-check-input"
@@ -217,6 +220,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       onClick={() => setExpanded(true)}
                     >
                       Show more
+                      {/* chevron icon for button */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"

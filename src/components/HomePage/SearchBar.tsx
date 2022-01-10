@@ -25,6 +25,8 @@ export default function SearchBar({
   ]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  //toggling between tags showing and not in selected inside filter in searchbar
+
   function handleTagClick(tag: string) {
     setTags([...tags.filter((element) => element !== tag)]);
     setSelectedTags([...selectedTags, tag]);
