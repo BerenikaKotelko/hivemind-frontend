@@ -133,8 +133,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
                         id="flexSwitchCheckChecked"
                         disabled
                       />
-                      //should disabled be below?
                     ) : (
+                      //should disabled be below?
                       <input
                         className="form-check-input"
                         type="checkbox"
