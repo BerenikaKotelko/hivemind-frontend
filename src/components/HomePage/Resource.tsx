@@ -97,7 +97,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
             <div className="modal-body">
               <div className="resource-header">
                 <p>Created {timestampConverter(resource.date_added)}</p>
-                <p>Added by {resource.author_id}</p>
+                <p>Added by {resource.name}</p>
                 <div className="header-buttons">
                   <button
                     type="button"
