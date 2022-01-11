@@ -16,7 +16,7 @@ const props = {
 
 
 test("loads items eventually", () => {
-  const div = document.createElement("div");
+  const div = document.createElement("bob");
   //bob?
   ReactDOM.render(<AddResourcePage {...props} />, div);
 });
@@ -39,9 +39,9 @@ it("title, description and url fields have correct placeholder values in Add Res
 
 it("tests there are three selectable options and these match expected values", () => {
   render(<AddResourcePage {...props} />);
-  // const recommendability = screen.getByTestId("add-resource-recommendability");
-  // expect(recommendability).toHaveAttribute('placeholder')
-  //how to check type is a select component?
+  //how to check type is a select component? Not impotant to test for the type of component, but expected function: black box testing
+  //using spies to test whether a function is being called
+  //testing snapshots 
   //should we be using async-await? 
   const option1 = screen.getByTestId("add-resource-recommendability-option1");
   expect(option1).toHaveTextContent("Un-bee-lievable");
@@ -55,7 +55,6 @@ it("tests the length of available tags div and each tag", () => {
   render(<AddResourcePage {...props} />);
   // const recommendability = screen.getByTestId("add-resource-recommendability");
   // expect(recommendability).toHaveAttribute('placeholder')
-  //how to check type is a select component?
   const availableResourceTags = screen.getByTestId("add-resource-tags");
   expect(availableResourceTags).toHaveLength(1);
   //how to test length of elements in a map? 
