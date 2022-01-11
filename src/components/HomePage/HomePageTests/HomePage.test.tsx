@@ -4,6 +4,7 @@ import "@testing-library/jest-dom";
 // the component to test
 import HomePage from "../HomePage";
 import { render, screen } from "@testing-library/react";
+// import Resource from "../Resource";
 // import SearchBar from "../SearchBar";
 
 const props = {
@@ -66,6 +67,26 @@ const props = {
   ],
 };
 
+// const resourceProps = {
+//   currentUser: {
+//     id: 1,
+//     name: "Mike",
+//     is_faculty: false,
+//   },
+//   resource: {
+//     id: 1,
+//     author_id: 1,
+//     title: "Test resource",
+//     description: "Description",
+//     recommended: "Buzzkill",
+//     url: "www.google.com",
+//     date_added: 1641832782,
+//     likes: "12",
+//     name: "Mike",
+//     is_faculty: true,
+//   },
+// };
+
 // How do?
 //const searchBarProps = {
 // searchTerm: "",
@@ -97,13 +118,19 @@ it("renders Test resource as text on page", () => {
   expect(resourceText2).toHaveTextContent("Created 04/01/2021");
 });
 
-test("loads comments for a specific resource", async () => {
-  const div = document.createElement("div");
-  //bob?
-  ReactDOM.render(<HomePage {...props} />, div);
-  expect(div).toHaveTextContent("What a rad resource");
-  expect(div).toHaveTextContent("Katy Perry");
-});
+// it("loads comments for a specific resource", async () => {
+//   render(<HomePage {...props} />);
+//   const commentText = screen.getByTestId("resource1");
+//   expect(commentText).toHaveTextContent("What a rad resource");
+//   expect(commentText).toHaveTextContent("Katy Perry");
+// });
+
+// it('calls onClick prop when clicked', async () => {
+//   const handleClick = jest.fn()
+//   render(<Resource {...resourceProps}></Resource>)
+//   fireEvent.click(screen.getByText(/Expand/i))
+//   expect(handleClick).toHaveBeenCalledTimes(1)
+// })
 
 //Testing whether the search bar loads and has content
 // test("loads items eventually", async () => {

@@ -6,6 +6,7 @@ import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
 import { IComment } from "../../interfaces/IComment";
 import { timestampConverterToGB } from "../../utils/timestampConverter";
+import timestampConverter from "../../utils/timestampConverter";
 
 interface ResourceProps {
   resource: IResource;
@@ -39,10 +40,22 @@ const tags = [
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
+  const [commentText, setCommentText] = useState("");
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
+  };
+  const handleAddComment = async (commentText: string) => {
+    if (currentUser) {
+      await axios.post(`${baseUrl}/comments`, {
+        resource_id: resource.id,
+        author_id: currentUser.id,
+        comment_text: commentText,
+      });
+    }
+    getComments(`resources/${resource.id}/comments`);
+    setCommentText("");
   };
   const getComments = useCallback(
     async (endpoint: string) => {
@@ -188,6 +201,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
                     aria-label="With textarea"
                     placeholder="Add a comment.."
                     aria-describedby="button-addon2"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   ></textarea>
                   <button
                     className="btn btn-outline-secondary"
@@ -197,6 +212,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to post a comment!"
                       );
+                      handleAddComment(commentText);
                     }}
                   >
                     Send
@@ -215,7 +231,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                             {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            {timestampConverterToGB(comment.date_added)}
+                            {timestampConverter(comment.date_added)}
                           </span>
                         </li>
                       ))}
@@ -262,7 +278,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                             {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            {timestampConverterToGB(comment.date_added)}
+                            {timestampConverter(comment.date_added)}
                           </span>
                         </li>
                       ))}
