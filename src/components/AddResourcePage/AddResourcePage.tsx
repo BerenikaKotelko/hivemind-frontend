@@ -3,21 +3,22 @@ import { ITag } from "../../interfaces/ITag";
 
 interface AddResourcePageProps {
   tags: ITag[];
+  setTags?: React.Dispatch<React.SetStateAction<ITag[]>>;
 }
 
-function AddResourcePage({ tags }: AddResourcePageProps): JSX.Element {
+function AddResourcePage({ tags, setTags }: AddResourcePageProps): JSX.Element {
   // const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
 
   return (
     <div className="container">
       <h1 data-testid="add-resource-header">Add a resource</h1>
-      <input data-testid="add-resource-input-title"></input>
-      <input data-testid="add-resource-input-description"></input>
-      <input data-testid="add-resource-input-url"></input>
+      <input data-testid="add-resource-input-title" placeholder="Title"></input>
+      <input data-testid="add-resource-input-description" placeholder="Description"></input>
+      <input data-testid="add-resource-input-url" placeholder="URL"></input>
       <select data-testid="add-resource-recommendability">
-        <option></option>
-        <option></option>
-        <option></option>
+        <option data-testid="add-resource-recommendability-option1">Un-bee-lievable</option>
+        <option data-testid="add-resource-recommendability-option2">May-bee</option>
+        <option data-testid="add-resource-recommendability-option3">Buzzkill</option>
       </select>
 
       <div className="selectedTags" data-testid="add-resource-selected-tags">
@@ -32,6 +33,7 @@ function AddResourcePage({ tags }: AddResourcePageProps): JSX.Element {
       <div className="filterTags" data-testid="add-resource-tags">
         {tags.map((tag) => (
           <span
+            data-testid={`add-resource-tag-${tag.tag_id}`}
             key={tag.tag_id}
             className="tag-badge badge rounded-pill bg-primary"
           >
@@ -42,5 +44,10 @@ function AddResourcePage({ tags }: AddResourcePageProps): JSX.Element {
     </div>
   );
 }
+
+//Shows header DONE
+//Testing that title, description and url input fields work (are of type input)
+//Testing that there are three selectable options, check the inputs match the options
+//All tags are showing in resource tags and none in selected tags 
 
 export default AddResourcePage;
