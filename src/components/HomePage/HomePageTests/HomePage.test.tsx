@@ -18,9 +18,9 @@ const props = {
       author_id: 1,
       title: "Test resource",
       description: "Description",
-      recommended: "nope",
+      recommended: "Buzzkill",
       url: "www.google.com",
-      date_added: 1000,
+      date_added: 1641832782,
       likes: "12",
       name: "Mike",
       is_faculty: true,
@@ -30,11 +30,11 @@ const props = {
       author_id: 2,
       title: "Test resource 2",
       description: "Description 2",
-      recommended: "yep",
+      recommended: "May-bee",
       url: "www.youtube.com",
-      date_added: 2000,
+      date_added: 1609778382,
       likes: "1",
-      name: "Mike",
+      name: "Simon",
       is_faculty: true,
     },
   ],
@@ -58,8 +58,17 @@ it("renders Test resource as text on page", () => {
   const resourceText = screen.getByTestId("resource1");
   expect(resourceText).toHaveTextContent("Test resource");
   expect(resourceText).toHaveTextContent("Added by Mike");
+  expect(resourceText).toHaveTextContent("Description");
+  expect(resourceText).toHaveTextContent("www.google.com");
+  expect(resourceText).toHaveTextContent("Buzzkill");
+  expect(resourceText).toHaveTextContent("Created 10/01/2022");
   const resourceText2 = screen.getByTestId("resource2");
   expect(resourceText2).toHaveTextContent("Test resource 2");
+  expect(resourceText2).toHaveTextContent("Added by Simon");
+  expect(resourceText2).toHaveTextContent("Description 2");
+  expect(resourceText2).toHaveTextContent("www.youtube.com");
+  expect(resourceText2).toHaveTextContent("May-bee");
+  expect(resourceText2).toHaveTextContent("Created 04/01/2021");
 });
 
 //Testing whether the search bar loads and has content

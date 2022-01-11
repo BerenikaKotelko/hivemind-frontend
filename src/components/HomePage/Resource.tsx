@@ -3,7 +3,9 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
-import timestampConverter from "../../utils/timestampConverter";
+import {
+  timestampConverterToGB,
+} from "../../utils/timestampConverter";
 
 interface ResourceProps {
   resource: IResource;
@@ -96,7 +98,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
             </div>
             <div className="modal-body">
               <div className="resource-header">
-                <p>Created {timestampConverter(resource.date_added)}</p>
+                <p>Created {timestampConverterToGB(resource.date_added)}</p>
                 <p>Added by {resource.name}</p>
                 <div className="header-buttons">
                   <button
