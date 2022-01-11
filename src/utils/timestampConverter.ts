@@ -11,3 +11,9 @@ export default function timestampConverter(unixTimestamp: number): string {
   ]).fromNow();
   return result;
 }
+
+export function timestampConverterToGB(unixTimestamp: number): string {
+  const paddedTimestamp = parseInt(String(unixTimestamp).padEnd(13, "0"));
+  const result = moment(paddedTimestamp).format("DD/MM/yyyy");
+  return result;
+}

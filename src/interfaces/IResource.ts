@@ -7,4 +7,6 @@ export interface IResource {
   url: string;
   date_added: number;
   likes: string;
+  name: string;
+  is_faculty: boolean;
 }

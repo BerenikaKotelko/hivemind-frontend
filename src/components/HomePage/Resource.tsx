@@ -1,9 +1,11 @@
 import "../styles/Resource.css";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
-import timestampConverter from "../../utils/timestampConverter";
+import { IComment } from "../../interfaces/IComment";
+import { timestampConverterToGB } from "../../utils/timestampConverter";
 
 interface ResourceProps {
   resource: IResource;
@@ -34,18 +36,26 @@ const tags = [
   "Jest",
 ];
 
-const comments = [
-  "Hey! this is a really useful resource, thanks for sharing :)",
-  "Wow I've never thought about it this way before.",
-  "I agree, this resource is bee-rilliant",
-];
-
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
+  const [comments, setComments] = useState<IComment[]>([]);
+  const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
   };
+  const getComments = useCallback(
+    async (endpoint: string) => {
+      const res = await axios.get(`${baseUrl}/${endpoint}`);
+      setComments(res.data.data);
+    },
+    [baseUrl]
+  );
+
+  useEffect(() => {
+    getComments(`resources/${resource.id}/comments`);
+  }, [getComments, resource.id]);
+
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
       <div className="card">
@@ -96,8 +106,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
             </div>
             <div className="modal-body">
               <div className="resource-header">
-                <p>Created {timestampConverter(resource.date_added)}</p>
-                <p>Added by {resource.author_id}</p>
+                <p>Created {timestampConverterToGB(resource.date_added)}</p>
+                <p>Added by {resource.name}</p>
                 <div className="header-buttons">
                   <button
                     type="button"
@@ -195,46 +205,48 @@ function Resource({ resource, currentUser }: ResourceProps) {
                 {!expanded && (
                   <>
                     <ul className="list-group comment-group">
-                      {comments.slice(0, 4).map((comment, idx) => (
+                      {comments.slice(0, 3).map((comment, idx) => (
                         <li
                           key={idx}
                           className="list-group-item d-flex justify-content-between align-items-start"
                         >
                           <div className="ms-2 me-auto">
-                            <div className="fw-bold">Barack Obama</div>
-                            {comment}
+                            <div className="fw-bold">{comment.name}</div>
+                            {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            14/10/2021
+                            {timestampConverterToGB(comment.date_added)}
                           </span>
                         </li>
                       ))}
                     </ul>
-                    <button
-                      className="comment-toggle btn btn-primary"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapseExample"
-                      aria-expanded="false"
-                      aria-controls="collapseExample"
-                      onClick={() => setExpanded(true)}
-                    >
-                      Show more
-                      {/* chevron icon for button */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-chevron-down"
-                        viewBox="0 0 16 16"
+                    {comments.length > 3 && (
+                      <button
+                        className="comment-toggle btn btn-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample"
+                        aria-expanded="false"
+                        aria-controls="collapseExample"
+                        onClick={() => setExpanded(true)}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                        />
-                      </svg>
-                    </button>
+                        Show more
+                        {/* chevron icon for button */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-chevron-down"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   </>
                 )}
                 {expanded && (
@@ -246,11 +258,11 @@ function Resource({ resource, currentUser }: ResourceProps) {
                           className="list-group-item d-flex justify-content-between align-items-start"
                         >
                           <div className="ms-2 me-auto">
-                            <div className="fw-bold">bob</div>
-                            {comment}
+                            <div className="fw-bold">{comment.name}</div>
+                            {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            14/10/2021
+                            {timestampConverterToGB(comment.date_added)}
                           </span>
                         </li>
                       ))}
