@@ -3,6 +3,7 @@ import NavBar from "./components/NavBar";
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import HomePage from "./components/HomePage/HomePage";
+import AddResourcePage from "./components/AddResourcePage/AddResourcePage";
 //for pop-ups
 import { ToastContainer } from "react-toastify";
 //importing style sheet whereas above is importing an alias
@@ -11,11 +12,14 @@ import axios from "axios";
 //interfaces
 import { IUser } from "./interfaces/IUser";
 import { IResource } from "./interfaces/IResource";
+import { ITag } from "./interfaces/ITag";
+import { setEmitFlags } from "typescript";
 
 function App() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>();
   const [resources, setResources] = useState<IResource[]>([]);
+  const [tags, setTags] = useState<ITag[]>([])
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
@@ -35,10 +39,19 @@ function App() {
     [baseUrl]
   );
 
+  const getTags = useCallback(
+    async (endpoint: string) => {
+      const res = await axios.get(`${baseUrl}/${endpoint}`);
+      setTags(res.data.data)
+    },
+    [baseUrl]
+  )
+
   useEffect(() => {
     getUsers("users");
     getResources("resources");
-  }, [getUsers, getResources]);
+    getTags("tags")
+  }, [getUsers, getResources, getTags]);
 
   return (
     <>
@@ -64,7 +77,7 @@ function App() {
           path="/"
           element={<HomePage resources={resources} currentUser={currentUser} />}
         />
-        <Route path="study-list" element={<>study list</>} />
+        <Route path="study-list" element={<AddResourcePage tags={tags} setTags={setTags} />} />
         <Route path="add-resource" element={<>add a resource</>} />
       </Routes>
     </>
