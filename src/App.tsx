@@ -77,8 +77,8 @@ function App() {
           path="/"
           element={<HomePage resources={resources} currentUser={currentUser} />}
         />
-        <Route path="study-list" element={<AddResourcePage tags={tags} setTags={setTags} />} />
-        <Route path="add-resource" element={<>add a resource</>} />
+        <Route path="study-list" element={<>study list</>} />
+        <Route path="add-resource" element={<AddResourcePage tags={tags} setTags={setTags} />} />
       </Routes>
     </>
   );
