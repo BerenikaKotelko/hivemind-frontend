@@ -7,6 +7,7 @@ import { IResource } from "../../interfaces/IResource";
 import { IComment } from "../../interfaces/IComment";
 import { timestampConverterToGB } from "../../utils/timestampConverter";
 import timestampConverter from "../../utils/timestampConverter";
+import ReactTooltip from "react-tooltip";
 
 interface ResourceProps {
   resource: IResource;
@@ -147,27 +148,30 @@ function Resource({ resource, currentUser }: ResourceProps) {
                     👎
                   </button>
                   {/* toggle for adding to to-study list */}
-                  <div className="add-study-list-toggle form-check form-switch ">
+                  <ReactTooltip delayShow={500} />
+                  <div
+                    className="add-study-list-toggle form-check form-switch"
+                    data-tip="Toggle for adding to study list"
+                  >
                     {currentUser ? (
                       <input
                         className="form-check-input"
                         type="checkbox"
                         role="switch"
-                        id="flexSwitchCheckChecked"
-                        disabled
+                        id="flexSwitchCheck"
                       />
                     ) : (
-                      //should disabled be below?
                       <input
                         className="form-check-input"
                         type="checkbox"
                         role="switch"
-                        id="flexSwitchCheckChecked"
+                        id="flexSwitchCheckDisabled"
+                        disabled
                       />
                     )}
                     <label
                       className="form-check-label"
-                      htmlFor="flexSwitchCheckChecked"
+                      htmlFor="flexSwitchCheck"
                     ></label>
                   </div>
                 </div>
