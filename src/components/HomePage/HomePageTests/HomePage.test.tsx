@@ -13,6 +13,12 @@ const props = {
     name: "Mike",
     is_faculty: false,
   },
+  tags: [
+    { tag_id: 1, tag_name: "Javascript" },
+    { tag_id: 2, tag_name: "Hooks" },
+    { tag_id: 3, tag_name: "Testing" },
+  ],
+
   resources: [
     {
       id: 1,

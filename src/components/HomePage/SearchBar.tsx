@@ -1,40 +1,35 @@
 import { useState } from "react";
+import { ITagSearchBar } from "../../interfaces/ITag";
 import "../styles/SearchBar.css";
 
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  tags: ITagSearchBar[];
 }
 
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
+  tags,
 }: SearchBarProps) {
-  const [tags, setTags] = useState<string[]>([
-    "React",
-    "Javascript",
-    "Bootstrap",
-    "Express",
-    "BackEnd",
-    "FrontEnd",
-    "Typescript",
-    "Git",
-    "Cypress",
-    "Testing",
-    "Jest",
-  ]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagPool, setTagPool] = useState<ITagSearchBar[]>(tags);
+  const [selectedTags, setSelectedTags] = useState<ITagSearchBar[]>([]);
 
   //toggling between tags showing and not in selected inside filter in searchbar
 
-  function handleTagClick(tag: string) {
-    setTags([...tags.filter((element) => element !== tag)]);
+  function handleTagClick(tag: ITagSearchBar) {
+    setTagPool([
+      ...tagPool.filter((element) => element.tag_name !== tag.tag_name),
+    ]);
     setSelectedTags([...selectedTags, tag]);
   }
 
-  function handleRemoveTagClick(tag: string) {
-    setSelectedTags([...selectedTags.filter((element) => element !== tag)]);
-    setTags([...tags, tag]);
+  function handleRemoveTagClick(tag: ITagSearchBar) {
+    setSelectedTags([
+      ...selectedTags.filter((element) => element.tag_name !== tag.tag_name),
+    ]);
+    setTagPool([...tagPool, tag]);
   }
   return (
     <>
@@ -123,7 +118,7 @@ export default function SearchBar({
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
-                  {tags.map((tag, index) => (
+                  {tagPool.map((tag, index) => (
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill bg-primary"
@@ -131,7 +126,7 @@ export default function SearchBar({
                         handleTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
@@ -146,7 +141,7 @@ export default function SearchBar({
                         handleRemoveTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
