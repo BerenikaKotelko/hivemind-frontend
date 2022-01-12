@@ -102,7 +102,8 @@ export default function SearchBar({
                   {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleTagClick(tag);
                       }}
@@ -117,7 +118,8 @@ export default function SearchBar({
                   {selectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleRemoveTagClick(tag);
                       }}

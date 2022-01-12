@@ -68,7 +68,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
               {resourceTags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="tag-badge badge rounded-pill bg-primary"
+                  className="tag-badge badge rounded-pill"
+                  style={{ backgroundColor: tag.tag_colour }}
                 >
                   {tag.tag_name}
                 </span>
