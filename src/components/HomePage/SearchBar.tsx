@@ -26,7 +26,7 @@ const contentType = [
   "Organisation",
 ];
 
-const recommendationValue = ["Un-bee-lievable", "May-bee", "Buzzkill"];
+const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
 
 export default function SearchBar({
   searchTerm,
