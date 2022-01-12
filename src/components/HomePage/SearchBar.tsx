@@ -8,6 +8,8 @@ interface SearchBarProps {
   selectedTags: ITag[];
   handleTagClick: (tag: ITag) => void;
   handleRemoveTagClick: (tag: ITag) => void;
+  handleContentTypeClick: (checked: boolean, contentType: string) => void;
+  handleRecommendationClick: (checked: boolean, recommendation: string) => void;
 }
 const contentType = [
   "Video",
@@ -35,6 +37,8 @@ export default function SearchBar({
   selectedTags,
   handleTagClick,
   handleRemoveTagClick,
+  handleContentTypeClick,
+  handleRecommendationClick,
 }: SearchBarProps) {
   return (
     <>
@@ -83,6 +87,12 @@ export default function SearchBar({
                     return (
                       <div key={index} className="form-check form-check-inline">
                         <input
+                          onClick={(e) =>
+                            handleContentTypeClick(
+                              e.currentTarget.checked,
+                              resourceType
+                            )
+                          }
                           className="form-check-input"
                           type="checkbox"
                           id={`typecheckbox${index}`}
@@ -108,6 +118,12 @@ export default function SearchBar({
                           className="form-check form-check-inline"
                         >
                           <input
+                            onClick={(e) =>
+                              handleRecommendationClick(
+                                e.currentTarget.checked,
+                                singleRecommendationValue
+                              )
+                            }
                             className="form-check-input"
                             type="checkbox"
                             id={`reccheckbox${index}`}

@@ -15,6 +15,10 @@ function HomePage({ currentUser, resources }: HomePageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [unselectedTags, setUnselectedTags] = useState<ITag[]>([]);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
+  const [checkedRecommendations, setCheckedRecommmendations] = useState<
+    string[]
+  >([]);
+  const [checkedContentTypes, setCheckedContentTypes] = useState<string[]>([]);
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
@@ -39,6 +43,27 @@ function HomePage({ currentUser, resources }: HomePageProps) {
     },
     [baseUrl]
   );
+  function handleRecommendationClick(checked: boolean, recommendation: string) {
+    if (!checked) {
+      setCheckedRecommmendations([
+        ...checkedRecommendations.filter(
+          (element) => element !== recommendation
+        ),
+      ]);
+    } else {
+      setCheckedRecommmendations([...checkedRecommendations, recommendation]);
+    }
+  }
+
+  function handleContentTypeClick(checked: boolean, contentType: string) {
+    if (!checked) {
+      setCheckedContentTypes([
+        ...checkedContentTypes.filter((element) => element !== contentType),
+      ]);
+    } else {
+      setCheckedContentTypes([...checkedRecommendations, contentType]);
+    }
+  }
 
   useEffect(() => {
     getTags("tags");
@@ -53,6 +78,8 @@ function HomePage({ currentUser, resources }: HomePageProps) {
         selectedTags={selectedTags}
         handleTagClick={handleTagClick}
         handleRemoveTagClick={handleRemoveTagClick}
+        handleRecommendationClick={handleRecommendationClick}
+        handleContentTypeClick={handleContentTypeClick}
       />
       <ResourceContainer
         currentUser={currentUser}
