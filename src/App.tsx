@@ -9,13 +9,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 //interfaces
-import { ITagSearchBar } from "./interfaces/ITag";
 import { IUser } from "./interfaces/IUser";
 import { IResource } from "./interfaces/IResource";
 
 function App() {
   const [users, setUsers] = useState<IUser[]>([]);
-  const [tags, setTags] = useState<ITagSearchBar[]>([]);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>();
   const [resources, setResources] = useState<IResource[]>([]);
 
@@ -36,19 +34,11 @@ function App() {
     },
     [baseUrl]
   );
-  const getTags = useCallback(
-    async (endpoint: string) => {
-      const res = await axios.get(`${baseUrl}/${endpoint}`);
-      setTags(res.data.data);
-    },
-    [baseUrl]
-  );
 
   useEffect(() => {
     getUsers("users");
     getResources("resources");
-    getTags(`tags`);
-  }, [getUsers, getResources, getTags]);
+  }, [getUsers, getResources]);
 
   return (
     <>
@@ -72,13 +62,7 @@ function App() {
         {/* different pages */}
         <Route
           path="/"
-          element={
-            <HomePage
-              resources={resources}
-              currentUser={currentUser}
-              tags={tags}
-            />
-          }
+          element={<HomePage resources={resources} currentUser={currentUser} />}
         />
         <Route path="study-list" element={<>study list</>} />
         <Route path="add-resource" element={<>add a resource</>} />

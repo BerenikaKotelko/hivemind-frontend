@@ -1,36 +1,23 @@
-import { useState } from "react";
-import { ITagSearchBar } from "../../interfaces/ITag";
+import { ITag } from "../../interfaces/ITag";
 import "../styles/SearchBar.css";
 
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  tags: ITagSearchBar[];
+  unselectedTags: ITag[];
+  selectedTags: ITag[];
+  handleTagClick: (tag: ITag) => void;
+  handleRemoveTagClick: (tag: ITag) => void;
 }
 
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
-  tags,
+  unselectedTags,
+  selectedTags,
+  handleTagClick,
+  handleRemoveTagClick,
 }: SearchBarProps) {
-  const [tagPool, setTagPool] = useState<ITagSearchBar[]>(tags);
-  const [selectedTags, setSelectedTags] = useState<ITagSearchBar[]>([]);
-
-  //toggling between tags showing and not in selected inside filter in searchbar
-
-  function handleTagClick(tag: ITagSearchBar) {
-    setTagPool([
-      ...tagPool.filter((element) => element.tag_name !== tag.tag_name),
-    ]);
-    setSelectedTags([...selectedTags, tag]);
-  }
-
-  function handleRemoveTagClick(tag: ITagSearchBar) {
-    setSelectedTags([
-      ...selectedTags.filter((element) => element.tag_name !== tag.tag_name),
-    ]);
-    setTagPool([...tagPool, tag]);
-  }
   return (
     <>
       <div className="d-flex">
@@ -42,12 +29,6 @@ export default function SearchBar({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {/* <button
-          className="btn btn-outline-success search-btn me-2"
-          type="submit"
-        >
-          Search
-        </button> */}
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
@@ -118,7 +99,7 @@ export default function SearchBar({
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
-                  {tagPool.map((tag, index) => (
+                  {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill bg-primary"
