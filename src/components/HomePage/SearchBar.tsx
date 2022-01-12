@@ -9,6 +9,24 @@ interface SearchBarProps {
   handleTagClick: (tag: ITag) => void;
   handleRemoveTagClick: (tag: ITag) => void;
 }
+const contentType = [
+  "Video",
+  "Article",
+  "Ebook",
+  "Podcast",
+  "Exercise",
+  "Exercise Set",
+  "Software Tool",
+  "Course",
+  "Diagram",
+  "Cheat-Sheet",
+  "Reference",
+  "Resource List",
+  "Youtube Channel",
+  "Organisation",
+];
+
+const recommendationValue = ["Un-bee-lievable", "May-bee", "Buzzkill"];
 
 export default function SearchBar({
   searchTerm,
@@ -60,42 +78,51 @@ export default function SearchBar({
               </div>
               <div className="modal-body">
                 <div className="filterType">
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect01"
-                    >
-                      Resource Type
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect01"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose resource...</option>
-                      <option value="1">Video</option>
-                      <option value="2">Podcast</option>
-                      <option value="3">Exercise</option>
-                    </select>
-                  </div>
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect02"
-                    >
-                      Recommendation value
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect02"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose value...</option>
-                      <option value="1">Un-bee-liveable</option>
-                      <option value="2">May-bee</option>
-                      <option value="3">Buzzkill</option>
-                    </select>
-                  </div>
+                  <h6>Resource Type</h6>
+                  {contentType.map((resourceType, index) => {
+                    return (
+                      <div key={index} className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={`typecheckbox${index}`}
+                          value={resourceType}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`typecheckbox${index}`}
+                        >
+                          {resourceType}
+                        </label>
+                      </div>
+                    );
+                  })}
+
+                  <br />
+                  <h6>Recommendation Value</h6>
+                  {recommendationValue.map(
+                    (singleRecommendationValue, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline"
+                        >
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`reccheckbox${index}`}
+                            value={singleRecommendationValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`reccheckbox${index}`}
+                          >
+                            {singleRecommendationValue}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
