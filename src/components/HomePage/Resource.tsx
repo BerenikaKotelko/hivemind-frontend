@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
+import { ITagResource } from "../../interfaces/ITag";
 import { IComment } from "../../interfaces/IComment";
 import { timestampConverterToGB } from "../../utils/timestampConverter";
 import timestampConverter from "../../utils/timestampConverter";
@@ -14,34 +15,11 @@ interface ResourceProps {
   currentUser: IUser | undefined;
 }
 
-const tags = [
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-];
-
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
+  const [resourceTags, setResourceTags] = useState<ITagResource[]>([]);
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
@@ -66,9 +44,18 @@ function Resource({ resource, currentUser }: ResourceProps) {
     [baseUrl]
   );
 
+  const getTags = useCallback(
+    async (endpoint: string) => {
+      const res = await axios.get(`${baseUrl}/${endpoint}`);
+      setResourceTags(res.data.data);
+    },
+    [baseUrl]
+  );
+
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
-  }, [getComments, resource.id]);
+    getTags(`resources/${resource.id}/tags`);
+  }, [getComments, resource.id, getTags]);
 
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
@@ -78,12 +65,12 @@ function Resource({ resource, currentUser }: ResourceProps) {
           <p className="card-text">{resource.description}</p>
           <div className="resource-summary">
             <div>
-              {tags.slice(0, 3).map((tag, index) => (
+              {resourceTags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
                   className="tag-badge badge rounded-pill bg-primary"
                 >
-                  {tag}
+                  {tag.tag_name}
                 </span>
               ))}
             </div>
@@ -179,12 +166,12 @@ function Resource({ resource, currentUser }: ResourceProps) {
               <h5>{resource.title}</h5>
               <div className="resource-details">
                 <div className="tag-container">
-                  {tags.map((tag, index) => (
+                  {resourceTags.map((tag, index) => (
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill bg-primary"
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>

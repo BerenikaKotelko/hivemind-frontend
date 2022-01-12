@@ -1,41 +1,23 @@
-import { useState } from "react";
+import { ITag } from "../../interfaces/ITag";
 import "../styles/SearchBar.css";
 
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  unselectedTags: ITag[];
+  selectedTags: ITag[];
+  handleTagClick: (tag: ITag) => void;
+  handleRemoveTagClick: (tag: ITag) => void;
 }
 
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
+  unselectedTags,
+  selectedTags,
+  handleTagClick,
+  handleRemoveTagClick,
 }: SearchBarProps) {
-  const [tags, setTags] = useState<string[]>([
-    "React",
-    "Javascript",
-    "Bootstrap",
-    "Express",
-    "BackEnd",
-    "FrontEnd",
-    "Typescript",
-    "Git",
-    "Cypress",
-    "Testing",
-    "Jest",
-  ]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  //toggling between tags showing and not in selected inside filter in searchbar
-
-  function handleTagClick(tag: string) {
-    setTags([...tags.filter((element) => element !== tag)]);
-    setSelectedTags([...selectedTags, tag]);
-  }
-
-  function handleRemoveTagClick(tag: string) {
-    setSelectedTags([...selectedTags.filter((element) => element !== tag)]);
-    setTags([...tags, tag]);
-  }
   return (
     <>
       <div className="d-flex">
@@ -47,12 +29,6 @@ export default function SearchBar({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {/* <button
-          className="btn btn-outline-success search-btn me-2"
-          type="submit"
-        >
-          Search
-        </button> */}
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
@@ -123,7 +99,7 @@ export default function SearchBar({
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
-                  {tags.map((tag, index) => (
+                  {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill bg-primary"
@@ -131,7 +107,7 @@ export default function SearchBar({
                         handleTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
@@ -146,7 +122,7 @@ export default function SearchBar({
                         handleRemoveTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
