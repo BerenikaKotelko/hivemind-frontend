@@ -9,4 +9,5 @@ export interface IResource {
   likes: string;
   name: string;
   is_faculty: boolean;
+  type: string;
 }

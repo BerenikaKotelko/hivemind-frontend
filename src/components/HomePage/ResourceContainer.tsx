@@ -1,22 +1,38 @@
 import Resource from "./Resource";
 import { IUser } from "../../interfaces/IUser";
+import { ITag } from "../../interfaces/ITag";
 import { IResource } from "../../interfaces/IResource";
-import filterResource from "../../utils/filterResource";
+import { filterResourceWithFilters } from "../../utils/filterResource";
 
 interface ResourceContainerProps {
   currentUser: IUser | undefined;
   resources: IResource[];
   searchTerm: string;
+  recommendationValue: { [key: string]: boolean };
+  contentType: { [key: string]: boolean };
+  selectedTags: ITag[];
 }
 
 function ResourceContainer({
   currentUser,
   resources,
   searchTerm,
+  recommendationValue,
+  contentType,
+  selectedTags,
 }: ResourceContainerProps) {
   const filteredResources = resources.filter((resource) =>
-    filterResource(searchTerm, resource.title, resource.description)
+    filterResourceWithFilters(
+      searchTerm,
+      resource.title,
+      resource.description,
+      resource.recommended,
+      resource.type,
+      recommendationValue,
+      contentType
+    )
   );
+  // console.log(recommendationValue);
 
   return (
     <div>

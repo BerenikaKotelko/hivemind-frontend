@@ -80,12 +80,12 @@ export default function SearchBar({
                 <h5 className="modal-title" id="staticBackdropLabel">
                   Set Filters
                 </h5>
-                <button
+                {/* <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                ></button>
+                ></button> */}
               </div>
               <div className="modal-body">
                 <h6>Resource Type</h6>

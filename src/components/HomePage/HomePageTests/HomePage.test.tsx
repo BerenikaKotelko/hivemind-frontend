@@ -31,6 +31,7 @@ const props = {
       likes: "12",
       name: "Mike",
       is_faculty: true,
+      type: "video",
     },
     {
       id: 2,
@@ -43,6 +44,7 @@ const props = {
       likes: "1",
       name: "Simon",
       is_faculty: true,
+      type: "video",
     },
   ],
   comments: [
