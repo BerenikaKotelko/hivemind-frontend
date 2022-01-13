@@ -6,12 +6,12 @@ import AddResourcePage from "../AddResourcePage";
 import { render, screen } from "@testing-library/react";
 
 const props = {
-  tags: [
+  tagBank: [
     { tag_id: 1, tag_name: "React" },
     { tag_id: 2, tag_name: "Javascript" },
     { tag_id: 3, tag_name: "Bootstrap" },
     { tag_id: 4, tag_name: "Express" },
-  ],
+  ]
 };
 
 

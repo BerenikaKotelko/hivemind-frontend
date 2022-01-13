@@ -19,7 +19,7 @@ function App() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>();
   const [resources, setResources] = useState<IResource[]>([]);
-  const [tags, setTags] = useState<ITag[]>([])
+  const [tagBank, setTagBank] = useState<ITag[]>([])
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
@@ -42,7 +42,7 @@ function App() {
   const getTags = useCallback(
     async (endpoint: string) => {
       const res = await axios.get(`${baseUrl}/${endpoint}`);
-      setTags(res.data.data)
+      setTagBank(res.data.data)
     },
     [baseUrl]
   )
@@ -78,7 +78,7 @@ function App() {
           element={<HomePage resources={resources} currentUser={currentUser} />}
         />
         <Route path="study-list" element={<>study list</>} />
-        <Route path="add-resource" element={<AddResourcePage tags={tags} setTags={setTags} />} />
+        <Route path="add-resource" element={<AddResourcePage tagBank={tagBank} />} />
       </Routes>
     </>
   );
