@@ -11,14 +11,38 @@ interface HomePageProps {
   resources: IResource[];
 }
 
+const defaultRecommendations = {
+  "Un-bee-table": false,
+  "May-bee": false,
+  Buzzkill: false,
+};
+
+const defaultContentTypes = {
+  Article: false,
+  "Cheat-Sheet": false,
+  Course: false,
+  Diagram: false,
+  Ebook: false,
+  Exercise: false,
+  "Exercise Set": false,
+  Podcast: false,
+  Organisation: false,
+  Reference: false,
+  "Resource List": false,
+  "Software Tool": false,
+  Video: false,
+  "Youtube Channel": false,
+};
+
 function HomePage({ currentUser, resources }: HomePageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [unselectedTags, setUnselectedTags] = useState<ITag[]>([]);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
-  const [checkedRecommendations, setCheckedRecommmendations] = useState<
-    string[]
-  >([]);
-  const [checkedContentTypes, setCheckedContentTypes] = useState<string[]>([]);
+  const [recommendations, setRecommendations] = useState<{
+    [key: string]: boolean;
+  }>(defaultRecommendations);
+  const [contentTypes, setContentTypes] =
+    useState<{ [key: string]: boolean }>(defaultContentTypes);
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
@@ -43,26 +67,23 @@ function HomePage({ currentUser, resources }: HomePageProps) {
     },
     [baseUrl]
   );
-  function handleRecommendationClick(checked: boolean, recommendation: string) {
-    if (!checked) {
-      setCheckedRecommmendations([
-        ...checkedRecommendations.filter(
-          (element) => element !== recommendation
-        ),
-      ]);
-    } else {
-      setCheckedRecommmendations([...checkedRecommendations, recommendation]);
-    }
+  function handleRecommendationClick(checked: boolean, recValue: string) {
+    const newRecommendations = Object.assign({}, recommendations);
+    newRecommendations[recValue] = checked;
+    setRecommendations(newRecommendations);
   }
 
-  function handleContentTypeClick(checked: boolean, contentType: string) {
-    if (!checked) {
-      setCheckedContentTypes([
-        ...checkedContentTypes.filter((element) => element !== contentType),
-      ]);
-    } else {
-      setCheckedContentTypes([...checkedRecommendations, contentType]);
-    }
+  function handleContentTypeClick(checked: boolean, resource: string) {
+    const newContentType = Object.assign({}, contentTypes);
+    newContentType[resource] = checked;
+    setContentTypes(newContentType);
+  }
+
+  function handleResetFilters() {
+    setRecommendations(defaultRecommendations);
+    setContentTypes(defaultContentTypes);
+    setUnselectedTags([...unselectedTags, ...selectedTags]);
+    setSelectedTags([]);
   }
 
   useEffect(() => {
@@ -80,6 +101,9 @@ function HomePage({ currentUser, resources }: HomePageProps) {
         handleRemoveTagClick={handleRemoveTagClick}
         handleRecommendationClick={handleRecommendationClick}
         handleContentTypeClick={handleContentTypeClick}
+        recommendationValue={recommendations}
+        contentType={contentTypes}
+        handleResetFilters={handleResetFilters}
       />
       <ResourceContainer
         currentUser={currentUser}

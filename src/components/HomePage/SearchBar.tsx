@@ -10,25 +10,29 @@ interface SearchBarProps {
   handleRemoveTagClick: (tag: ITag) => void;
   handleContentTypeClick: (checked: boolean, contentType: string) => void;
   handleRecommendationClick: (checked: boolean, recommendation: string) => void;
+  contentType: { [key: string]: boolean };
+  recommendationValue: { [key: string]: boolean };
+  handleResetFilters: () => void;
 }
-const contentType = [
-  "Video",
-  "Article",
-  "Ebook",
-  "Podcast",
-  "Exercise",
-  "Exercise Set",
-  "Software Tool",
-  "Course",
-  "Diagram",
-  "Cheat-Sheet",
-  "Reference",
-  "Resource List",
-  "Youtube Channel",
-  "Organisation",
-];
 
-const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
+// const contentType = [
+//   "Video",
+//   "Article",
+//   "Ebook",
+//   "Podcast",
+//   "Exercise",
+//   "Exercise Set",
+//   "Software Tool",
+//   "Course",
+//   "Diagram",
+//   "Cheat-Sheet",
+//   "Reference",
+//   "Resource List",
+//   "Youtube Channel",
+//   "Organisation",
+// ];
+
+// const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
 
 export default function SearchBar({
   searchTerm,
@@ -39,6 +43,9 @@ export default function SearchBar({
   handleRemoveTagClick,
   handleContentTypeClick,
   handleRecommendationClick,
+  recommendationValue,
+  contentType,
+  handleResetFilters,
 }: SearchBarProps) {
   return (
     <>
@@ -81,59 +88,67 @@ export default function SearchBar({
                 ></button>
               </div>
               <div className="modal-body">
+                <h6>Resource Type</h6>
                 <div className="filterType">
-                  <h6>Resource Type</h6>
-                  {contentType.map((resourceType, index) => {
-                    return (
-                      <div key={index} className="form-check form-check-inline">
-                        <input
-                          onClick={(e) =>
-                            handleContentTypeClick(
-                              e.currentTarget.checked,
-                              resourceType
-                            )
-                          }
-                          className="form-check-input"
-                          type="checkbox"
-                          id={`typecheckbox${index}`}
-                          value={resourceType}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`typecheckbox${index}`}
+                  {Object.entries(contentType).map(
+                    ([contentKey, contentValue], index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline contentType"
                         >
-                          {resourceType}
-                        </label>
-                      </div>
-                    );
-                  })}
-
-                  <br />
-                  <h6>Recommendation Value</h6>
-                  {recommendationValue.map(
-                    (singleRecommendationValue, index) => {
+                          <input
+                            onChange={(e) =>
+                              handleContentTypeClick(
+                                e.currentTarget.checked,
+                                contentKey
+                              )
+                            }
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`typecheckbox${index}`}
+                            value={contentKey}
+                            checked={contentValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`typecheckbox${index}`}
+                          >
+                            {contentKey}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+                <br />
+                <h6>Recommendation Value</h6>
+                <div className="filterRecommendations">
+                  {Object.entries(recommendationValue).map(
+                    ([recKey, recValue], index) => {
                       return (
                         <div
                           key={index}
                           className="form-check form-check-inline"
                         >
                           <input
-                            onClick={(e) =>
+                            onChange={(e) =>
                               handleRecommendationClick(
                                 e.currentTarget.checked,
-                                singleRecommendationValue
+                                recKey
                               )
                             }
                             className="form-check-input"
                             type="checkbox"
                             id={`reccheckbox${index}`}
-                            value={singleRecommendationValue}
+                            value={recKey}
+                            checked={recValue}
                           />
                           <label
                             className="form-check-label"
                             htmlFor={`reccheckbox${index}`}
                           >
-                            {singleRecommendationValue}
+                            {recKey}
                           </label>
                         </div>
                       );
@@ -177,6 +192,7 @@ export default function SearchBar({
                   type="button"
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
+                  onClick={handleResetFilters}
                 >
                   Reset filters
                 </button>
