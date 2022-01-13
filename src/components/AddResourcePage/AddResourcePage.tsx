@@ -2,12 +2,17 @@
 import { useState, useEffect } from "react";
 import { ITag } from "../../interfaces/ITag";
 import { INewResource } from "../../interfaces/INewResource";
+import { INewTag } from "../../interfaces/INewTag";
 import { setTextRange } from "typescript";
 import { Modal, Button } from "react-bootstrap";
+import axios from "axios";
+import { argThresholdOpts } from "moment";
 
 
 interface AddResourcePageProps {
   tagBank: ITag[];
+  getTags: (endpoint: string) => void
+  baseUrl: string
 }
 
 // export interface IResource {
@@ -25,19 +30,18 @@ interface AddResourcePageProps {
 //post request to resource_tags table with tag_id and resource_id
 //post request to tags table, adding the names of any additional tags created by user and refetch the table
 //automatic redirect to the Homepage using React router when pressing submit button
-//automatic styling to capitalise first letter
 //don't show add resource page when visitor not signed in
-//add a resource type drop-down
 //add option to attach a colour to your tags
 
 
-function AddResourcePage({ tagBank }: AddResourcePageProps): JSX.Element {
+function AddResourcePage({ tagBank, getTags, baseUrl }: AddResourcePageProps): JSX.Element {
   const [newResource, setNewResource] = useState<INewResource>(Object)
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
   const [tags, setTags] = useState<ITag[]>([]);
   const [modalState, setModalState] = useState<boolean>(false)
-  const [newTags, setNewTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState<string>("")
+  const [newTagColour, setNewTagColour] = useState<string>("Red")
+  const [newTags, setNewTags] = useState<INewTag[]>([{ tag_name: "Tester", tag_colour: "Red" }])
 
 
   useEffect(
@@ -61,22 +65,35 @@ function AddResourcePage({ tagBank }: AddResourcePageProps): JSX.Element {
   }
 
   function handleNewTag(newTag: string) {
-    setNewTag(newTag)
+    setNewTag(newTag.replace(/\b\w/g, c => c.toUpperCase()))
   }
 
-  function handleNewTags(newTag: string) {
-    setNewTags([...newTags, newTag])
+  function handleNewTagColour(newTagColour: string) {
+    setNewTagColour(newTagColour)
+  }
+
+  function handleNewTags(newTagName: string, newTagColour: string) {
+    setNewTags([...newTags, { tag_name: newTagName, tag_colour: newTagColour }])
+  }
+
+  //posting new tags to tags table and updating tag bank with new additions
+  async function handleUpdateTagBank(newTags: INewTag[]) {
+    await axios.post(`${baseUrl}/${tags}`, newTags);
+    getTags("tags")
   }
 
   console.log(newResource)
-  console.log(newTag)
-  console.log(`new tags: ${newTags}`)
+  console.log(`new tag: ${newTag}`)
+  console.log(`new tags: ${JSON.stringify(newTags)}`)
+  console.log(`chosen colour: ${newTagColour}`)
+
 
   const openModal = () => setModalState(true)
   const closeModal = () => setModalState(false)
 
   function onClosingModal() {
     setModalState(false) //why can't call closeModal?
+    setNewTag("")
     setNewTags([])
   }
 
@@ -109,6 +126,23 @@ function AddResourcePage({ tagBank }: AddResourcePageProps): JSX.Element {
         value={newResource.url}
         onChange={(e) => handleAddNewResource('url', e.target.value)}
       />
+      <h3>Content type</h3>
+      <select data-testid="add-resource-recommendability" onChange={(e) => handleAddNewResource('content_type', e.target.value)}>
+        <option data-testid="add-resource-recommendability-option1">Video</option>
+        <option data-testid="add-resource-recommendability-option2">Article</option>
+        <option data-testid="add-resource-recommendability-option3">Ebook</option>
+        <option data-testid="add-resource-recommendability-option3">Podcast</option>
+        <option data-testid="add-resource-recommendability-option3">Exercise</option>
+        <option data-testid="add-resource-recommendability-option3">Exercise Set</option>
+        <option data-testid="add-resource-recommendability-option3">Software Tool</option>
+        <option data-testid="add-resource-recommendability-option3">Course</option>
+        <option data-testid="add-resource-recommendability-option3">Diagram</option>
+        <option data-testid="add-resource-recommendability-option3">Cheat-Sheet</option>
+        <option data-testid="add-resource-recommendability-option3">Reference</option>
+        <option data-testid="add-resource-recommendability-option3">Resource List</option>
+        <option data-testid="add-resource-recommendability-option3">YouTube Channel</option>
+        <option data-testid="add-resource-recommendability-option3">Organisation</option>
+      </select>
       <h3>Resource recommendability</h3>
       <select data-testid="add-resource-recommendability" onChange={(e) => handleAddNewResource('recommended', e.target.value)}>
         <option data-testid="add-resource-recommendability-option1">Un-bee-lievable</option>
@@ -159,24 +193,36 @@ function AddResourcePage({ tagBank }: AddResourcePageProps): JSX.Element {
               aria-label="Add a new tag"
               value={newTag}
               onChange={(e) => handleNewTag(e.target.value)}></input>
-            <button onClick={() => handleNewTags(newTag)}>Add new tag</button>
+            <select onChange={(e) => handleNewTagColour(e.target.value)}>
+              {/* how to style to add colour to drop-down options?  */}
+              <option>Red</option>
+              <option>Orange</option>
+              <option>Yellow</option>
+              <option>Green</option>
+              <option>Light Blue</option>
+              <option>Dark Blue</option>
+              <option>Purple</option>
+              <option>Pink</option>
+            </select>
+            <button onClick={() => handleNewTags(newTag, newTagColour)}>Add new tag</button>
           </Modal.Body>
           <Modal.Footer>
             <Modal.Body>
               <b>Tags to add</b>
               {newTags.map((tag) => (
                 <span
-                  key={tag}
+                  key={tag.tag_name}
                   className="tag-badge badge rounded-pill bg-primary"
                 >
-                  {tag}
+                  {tag.tag_name}
                 </span>
               ))}
             </Modal.Body>
-            <Button>Submit new tags</Button>
+            <Button onClick={handleUpdateTagBank(newTags)}>Submit new tags</Button>
           </Modal.Footer>
         </Modal>
       </>
+      <button>Submit new resource</button>
     </div >
   );
 }
