@@ -21,6 +21,7 @@ export function filterResourceWithFilters(
   searchTerm: string,
   title: string,
   description: string,
+  author: string,
   recommended: string,
   type: string,
   recommendationValue: { [key: string]: boolean },
@@ -50,11 +51,15 @@ export function filterResourceWithFilters(
   const searchTermLower = searchTerm.toLowerCase();
   const titleLower = title.toLowerCase();
   const descriptionLower = description.toLowerCase();
+  const authorLower = author.toLowerCase();
 
-  return ((titleLower.includes(searchTermLower) ||
-    descriptionLower.includes(searchTermLower)) &&
-    recommendationValueArray.includes(recommended)) ||
-    contentTypeArray.includes(type)
+  return (titleLower.includes(searchTermLower) ||
+    descriptionLower.includes(searchTermLower) ||
+    authorLower.includes(searchTermLower)) &&
+    (recommendationValueArray.length === 0
+      ? true
+      : recommendationValueArray.includes(recommended)) &&
+    (contentTypeArray.length === 0 ? true : contentTypeArray.includes(type))
     ? true
     : false;
 }

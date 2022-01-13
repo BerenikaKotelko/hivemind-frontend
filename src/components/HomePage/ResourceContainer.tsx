@@ -26,13 +26,13 @@ function ResourceContainer({
       searchTerm,
       resource.title,
       resource.description,
+      resource.name,
       resource.recommended,
       resource.type,
       recommendationValue,
       contentType
     )
   );
-  // console.log(recommendationValue);
 
   return (
     <div>
