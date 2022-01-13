@@ -56,6 +56,11 @@ function Resource({ resource, currentUser }: ResourceProps) {
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
     getTags(`resources/${resource.id}/tags`);
+    // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+    return () => {
+      setComments([]);
+      setResourceTags([]);
+    };
   }, [getComments, resource.id, getTags]);
 
   return (
