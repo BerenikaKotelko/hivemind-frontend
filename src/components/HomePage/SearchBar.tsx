@@ -8,7 +8,31 @@ interface SearchBarProps {
   selectedTags: ITag[];
   handleTagClick: (tag: ITag) => void;
   handleRemoveTagClick: (tag: ITag) => void;
+  handleContentTypeClick: (checked: boolean, contentType: string) => void;
+  handleRecommendationClick: (checked: boolean, recommendation: string) => void;
+  contentType: { [key: string]: boolean };
+  recommendationValue: { [key: string]: boolean };
+  handleResetFilters: () => void;
 }
+
+// const contentType = [
+//   "Video",
+//   "Article",
+//   "Ebook",
+//   "Podcast",
+//   "Exercise",
+//   "Exercise Set",
+//   "Software Tool",
+//   "Course",
+//   "Diagram",
+//   "Cheat-Sheet",
+//   "Reference",
+//   "Resource List",
+//   "Youtube Channel",
+//   "Organisation",
+// ];
+
+// const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
 
 export default function SearchBar({
   searchTerm,
@@ -17,6 +41,11 @@ export default function SearchBar({
   selectedTags,
   handleTagClick,
   handleRemoveTagClick,
+  handleContentTypeClick,
+  handleRecommendationClick,
+  recommendationValue,
+  contentType,
+  handleResetFilters,
 }: SearchBarProps) {
   return (
     <>
@@ -59,50 +88,80 @@ export default function SearchBar({
                 ></button>
               </div>
               <div className="modal-body">
+                <h6>Resource Type</h6>
                 <div className="filterType">
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect01"
-                    >
-                      Resource Type
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect01"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose resource...</option>
-                      <option value="1">Video</option>
-                      <option value="2">Podcast</option>
-                      <option value="3">Exercise</option>
-                    </select>
-                  </div>
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect02"
-                    >
-                      Recommendation value
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect02"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose value...</option>
-                      <option value="1">Un-bee-liveable</option>
-                      <option value="2">May-bee</option>
-                      <option value="3">Buzzkill</option>
-                    </select>
-                  </div>
+                  {Object.entries(contentType).map(
+                    ([contentKey, contentValue], index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline contentType"
+                        >
+                          <input
+                            onChange={(e) =>
+                              handleContentTypeClick(
+                                e.currentTarget.checked,
+                                contentKey
+                              )
+                            }
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`typecheckbox${index}`}
+                            value={contentKey}
+                            checked={contentValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`typecheckbox${index}`}
+                          >
+                            {contentKey}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+                <br />
+                <h6>Recommendation Value</h6>
+                <div className="filterRecommendations">
+                  {Object.entries(recommendationValue).map(
+                    ([recKey, recValue], index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline"
+                        >
+                          <input
+                            onChange={(e) =>
+                              handleRecommendationClick(
+                                e.currentTarget.checked,
+                                recKey
+                              )
+                            }
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`reccheckbox${index}`}
+                            value={recKey}
+                            checked={recValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`reccheckbox${index}`}
+                          >
+                            {recKey}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
                   {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleTagClick(tag);
                       }}
@@ -117,7 +176,8 @@ export default function SearchBar({
                   {selectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleRemoveTagClick(tag);
                       }}
@@ -132,6 +192,7 @@ export default function SearchBar({
                   type="button"
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
+                  onClick={handleResetFilters}
                 >
                   Reset filters
                 </button>
