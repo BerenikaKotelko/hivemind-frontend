@@ -121,7 +121,6 @@ export default function SearchBar({
                     }
                   )}
                 </div>
-                <br />
                 <h6>Recommendation Value</h6>
                 <div className="filterRecommendations">
                   {Object.entries(recommendationValue).map(
