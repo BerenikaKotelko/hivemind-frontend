@@ -161,6 +161,7 @@ export default function SearchBar({
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill"
+                      role="button"
                       style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleTagClick(tag);
@@ -177,6 +178,7 @@ export default function SearchBar({
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill"
+                      role="button"
                       style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleRemoveTagClick(tag);
