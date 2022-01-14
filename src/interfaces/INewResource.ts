@@ -4,5 +4,5 @@ export interface INewResource {
     description: string;
     recommended: string;
     url: string;
-    content_type: string
+    type: string
 }
