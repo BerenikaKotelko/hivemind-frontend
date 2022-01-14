@@ -128,7 +128,6 @@ it("renders Test resource as text on page", () => {
   expect(resourceText2).toHaveTextContent("Created 04/01/2021");
 });
 
-
 // it("loads comments for a specific resource", async () => {
 //   render(<HomePage {...props} />);
 //   const commentText = screen.getByTestId("resource1");
