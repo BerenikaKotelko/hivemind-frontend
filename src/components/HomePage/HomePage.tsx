@@ -109,6 +109,9 @@ function HomePage({ currentUser, resources }: HomePageProps) {
         currentUser={currentUser}
         resources={resources}
         searchTerm={searchTerm}
+        recommendationValue={recommendations}
+        contentType={contentTypes}
+        selectedTags={selectedTags}
       />
     </div>
   );

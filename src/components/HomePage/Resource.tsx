@@ -25,6 +25,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
     //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
   };
+
   const handleAddComment = async (commentText: string) => {
     if (currentUser) {
       await axios.post(`${baseUrl}/comments`, {
@@ -55,13 +56,39 @@ function Resource({ resource, currentUser }: ResourceProps) {
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
     getTags(`resources/${resource.id}/tags`);
+    // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+    return () => {
+      setComments([]);
+      setResourceTags([]);
+    };
   }, [getComments, resource.id, getTags]);
 
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">{resource.title}</h5>
+          <div className="card-title">
+            <div className="card-title-main">
+              <h5>{resource.title} </h5>
+              <em>
+                <small className="text-muted">
+                  submitted by: {resource.name}
+                </small>
+              </em>
+            </div>
+            <div className="card-title-details">
+              <p>
+                <em>
+                  <small className="text-muted">{resource.type}</small>
+                </em>
+              </p>
+              <p>
+                <em>
+                  <small className="text-muted">{resource.recommended}</small>
+                </em>
+              </p>
+            </div>
+          </div>
           <p className="card-text">{resource.description}</p>
           <div className="resource-summary">
             <div>
@@ -99,12 +126,12 @@ function Resource({ resource, currentUser }: ResourceProps) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{resource.title}</h5>
-              <button
+              {/* <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-              ></button>
+              ></button> */}
             </div>
             <div className="modal-body">
               <div className="resource-header">
@@ -118,7 +145,6 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to like a resource!"
                       );
-                      console.log("thumbs up");
                     }}
                   >
                     👍
@@ -130,13 +156,12 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to dislike a resource!"
                       );
-                      console.log("thumbs down");
                     }}
                   >
                     👎
                   </button>
                   {/* toggle for adding to to-study list */}
-                  <ReactTooltip delayShow={500} />
+                  <ReactTooltip delayShow={300} />
                   <div
                     className="add-study-list-toggle form-check form-switch"
                     data-tip="Toggle for adding to study list"
@@ -164,7 +189,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                   </div>
                 </div>
               </div>
-              <h5>{resource.title}</h5>
+              <h5>{resource.type}</h5>
               <div className="resource-details">
                 <div className="tag-container">
                   {resourceTags.map((tag, index) => (

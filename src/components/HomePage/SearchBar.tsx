@@ -80,12 +80,12 @@ export default function SearchBar({
                 <h5 className="modal-title" id="staticBackdropLabel">
                   Set Filters
                 </h5>
-                <button
+                {/* <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                ></button>
+                ></button> */}
               </div>
               <div className="modal-body">
                 <h6>Resource Type</h6>
@@ -121,7 +121,6 @@ export default function SearchBar({
                     }
                   )}
                 </div>
-                <br />
                 <h6>Recommendation Value</h6>
                 <div className="filterRecommendations">
                   {Object.entries(recommendationValue).map(
@@ -161,6 +160,7 @@ export default function SearchBar({
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill"
+                      role="button"
                       style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleTagClick(tag);
@@ -177,6 +177,7 @@ export default function SearchBar({
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill"
+                      role="button"
                       style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleRemoveTagClick(tag);
