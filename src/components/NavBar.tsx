@@ -42,15 +42,17 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  to="add-resource"
-                  className={
-                    "link nav-link " +
-                    `${location.pathname === "/add-resource" ? "active" : ""}`
-                  }
-                >
-                  Add Resource
-                </Link>
+                {currentUser ? (
+                  <Link
+                    to="add-resource"
+                    className={
+                      "link nav-link " +
+                      `${location.pathname === "/add-resource" ? "active" : ""}`
+                    }
+                  >
+                    Add Resource
+                  </Link>
+                ) : <p>""</p>}
               </li>
             </ul>
           </div>
