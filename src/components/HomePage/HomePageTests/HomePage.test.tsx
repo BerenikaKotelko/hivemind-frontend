@@ -47,32 +47,32 @@ const props = {
       type: "video",
     },
   ],
-  comments: [
-    {
-      comment_id: 5,
-      resource_id: 1,
-      author_id: 2,
-      comment_text: "What a rad resource",
-      date_added: "1641832782",
-      name: "Katy Perry",
-    },
-    {
-      comment_id: 3,
-      resource_id: 1,
-      author_id: 1,
-      comment_text: "Testing endpoint comment",
-      date_added: "1641465486",
-      name: "Barack Obama",
-    },
-    {
-      comment_id: 1,
-      resource_id: 1,
-      author_id: 1,
-      comment_text: "My first comment",
-      date_added: "1641313407",
-      name: "Barack Obama",
-    },
-  ],
+  // comments: [
+  //   {
+  //     comment_id: 5,
+  //     resource_id: 1,
+  //     author_id: 2,
+  //     comment_text: "What a rad resource",
+  //     date_added: "1641832782",
+  //     name: "Katy Perry",
+  //   },
+  //   {
+  //     comment_id: 3,
+  //     resource_id: 1,
+  //     author_id: 1,
+  //     comment_text: "Testing endpoint comment",
+  //     date_added: "1641465486",
+  //     name: "Barack Obama",
+  //   },
+  //   {
+  //     comment_id: 1,
+  //     resource_id: 1,
+  //     author_id: 1,
+  //     comment_text: "My first comment",
+  //     date_added: "1641313407",
+  //     name: "Barack Obama",
+  //   },
+  // ],
 };
 
 // const resourceProps = {
@@ -102,6 +102,8 @@ const props = {
 // }
 
 //testing whether the Home Page loads and has content
+
+//this:
 test.skip("loads items eventually", async () => {
   const div = document.createElement("div");
   //bob?
@@ -125,6 +127,7 @@ it("renders Test resource as text on page", () => {
   expect(resourceText2).toHaveTextContent("May-bee");
   expect(resourceText2).toHaveTextContent("Created 04/01/2021");
 });
+
 
 // it("loads comments for a specific resource", async () => {
 //   render(<HomePage {...props} />);
