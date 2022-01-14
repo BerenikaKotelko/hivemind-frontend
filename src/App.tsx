@@ -78,11 +78,9 @@ function App() {
           element={<HomePage resources={resources} currentUser={currentUser} />}
         />
         <Route path="study-list" element={<>study list</>} />
-        {currentUser !== undefined &&
-          <Route
-            path="add-resource"
-            element={<AddResourcePage tagBank={tagBank} getTags={getTags} baseUrl={baseUrl} resources={resources} currentUser={currentUser} />} />
-        }
+        <Route
+          path="add-resource"
+          element={<AddResourcePage tagBank={tagBank} getTags={getTags} baseUrl={baseUrl} resources={resources} currentUser={currentUser} />} />
       </Routes>
     </>
   );

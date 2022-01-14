@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Route } from "react-router-dom";
 import HomePage from "../HomePage/HomePage"
+import { createImportSpecifier } from "typescript";
 
 
 interface AddResourcePageProps {
@@ -62,7 +63,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   const [unselectedTags, setUnselectedTags] = useState<ITag[]>([])
   const [modalState, setModalState] = useState<boolean>(false)
   const [newTagColour, setNewTagColour] = useState<string>("Red")
-  const [latestResourceId, setLatestResourceId] = useState<number>(0)
+  // const [latestResourceId, setLatestResourceId] = useState<number>(0)
 
 
   useEffect(
@@ -74,11 +75,11 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   //defining constants
   //onClick condition: ensure all input fields are filled out
   const ifEmptyInputs =
-    newResource.title !== "" ||
-    newResource.description !== "" ||
-    newResource.recommended !== "Choose a resource recommendability..." ||
-    newResource.type !== "Choose a resource type..." ||
-    newResource.url !== "" ||
+    newResource.title === "" ||
+    newResource.description === "" ||
+    newResource.recommended === "Choose a resource recommendability..." ||
+    newResource.type === "Choose a resource type..." ||
+    newResource.url === "" ||
     selectedTags.length === 0
 
 
@@ -126,36 +127,49 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
     //filter over the tags returned from getTags and add only the ones with same ids as newtags to setSelectedTags
   }
 
-  async function handlePostNewResource(newResource: INewResource, currentUser: IUser) {
-    setNewResource({ ...newResource, author_id: currentUser.id })
-    const res = await axios.post(`${baseUrl}/resource}`, newResource);
-    console.log(`New resource added with title: ${res.data.data.title}`)
-    setLatestResourceId(res.data.data.id)
+  async function handlePostNewResource(newResource: INewResource) {
+    if (currentUser !== undefined) {
+      setNewResource({ ...newResource, author_id: currentUser.id })
+      console.log(`Expected resource for backend${JSON.stringify(newResource)}`)
+      const res = await axios.post(`${baseUrl}/resource}`, newResource);
+      console.log(`New resource added with title: ${res.data.data.title}`)
+      // const latestResourceId: number = res.data.data.id
+      //add to the backend
+    } else {
+      console.log("Can't post if not signed in")
+    }
   }
 
-  async function handlePostResourcesTags(selectedTags: ITag[], resource_id: number) {
+  /*async */function handlePostResourcesTags(selectedTags: ITag[]/*, resource_id: number*/) {
     //do I need to make a get request for the latest Resource id? 
-    let reqBody = []
-    for (let tag of selectedTags) {//why using const?
-      reqBody.push(tag.tag_id) //is key going to be captured here? 
+    if (currentUser !== undefined) {
+      console.log("I am running!")
+      const reqBody = []
+      for (const tag of selectedTags) {
+        reqBody.push(tag.tag_id) //is key going to be captured here? 
+      }
+      console.log(`Body expected: array of tag ids: ${reqBody}`)
+    } else {
+      console.log("Can't post if not signed in")
     }
-    const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
-    console.log(`New resource added: ${res.data.data.title}`)
-    return (
-      <Route
-        path="/"
-        element={<HomePage resources={resources} currentUser={currentUser} />}
-      />
-    )
   }
+  // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
+  // console.log(`New resource added: ${res.data.data.title}`)
+  // return (
+  //   <Route
+  //     path="/"
+  //     element={<HomePage resources={resources} currentUser={currentUser} />}
+  //   />
+  // )
+  // }
 
 
   //console.logs
   console.log(newResource)
-  console.log(`new tag: ${newTag}`)
-  console.log(`new tags: ${JSON.stringify(newTags)}`)
-  console.log(`chosen colour: ${newTagColour}`)
-  console.log(`selected tags: ${JSON.stringify(selectedTags)}`)
+  // console.log(`new tag: ${newTag}`)
+  // console.log(`new tags: ${JSON.stringify(newTags)}`)
+  // console.log(`chosen colour: ${newTagColour}`)
+  // console.log(`selected tags: ${JSON.stringify(selectedTags)}`)
 
 
   //modal code
@@ -254,7 +268,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             id="inputGroupSelect01"
             defaultValue="0"
             data-testid="add-resource-recommendability"
-            onChange={(e) => handleAddNewResource('type', e.target.value)}
+            onChange={(e) => handleAddNewResource('recommended', e.target.value)}
           >
             <option>Choose a recommendability...</option>
             <option>Un-bee-table</option>
@@ -370,18 +384,16 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           type="button"
           className="btn btn-outline-success btn-lg"
           onClick={
-            () => ifEmptyInputs ?
-              console.log("Please add inputs for every field") :
-              () => {
-                handlePostNewResource(newResource, currentUser);
-                //how to call two functions inside onClick? 
-                handlePostResourcesTags(selectedTags, latestResourceId)
-              }
+            ifEmptyInputs ? () => console.log("Please add inputs for every field") : () => {
+              handlePostNewResource(newResource);
+              handlePostResourcesTags(selectedTags/*, latestResourceId*/)
+            }
           }
         >Submit new resource</button>
       </div>
     </div >
   );
 }
+
 
 export default AddResourcePage;
