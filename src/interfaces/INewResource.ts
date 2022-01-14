@@ -4,5 +4,6 @@ export interface INewResource {
     description: string;
     recommended: string;
     url: string;
-    type: string
+    type: string;
+    week: string;
 }

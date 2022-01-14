@@ -7,6 +7,7 @@ import { INewTag } from "../../interfaces/INewTag";
 import { IUser } from "../../interfaces/IUser";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify";
 import { Route } from "react-router-dom";
 import HomePage from "../HomePage/HomePage"
@@ -27,9 +28,20 @@ const initialResource = {
   description: "",
   recommended: "",
   url: "",
-  type: ""
+  type: "",
+  week: ""
 }
 
+const colourCodes = [
+  { colour_name: "Red", HEX: "#D92626" },
+  { colour_name: "Orange", HEX: "#F26924" },
+  { colour_name: "Yellow", HEX: "#FFBF00" },
+  { colour_name: "Green", HEX: "#00CC00" },
+  { colour_name: "Light Blue", HEX: "#15BDD4" },
+  { colour_name: "Dark Blue", HEX: "#1A76BD" },
+  { colour_name: "Purple", HEX: "#6F4599" },
+  { colour_name: "Pink", HEX: "#BF1D89" },
+]
 
 
 // export interface IResource {
@@ -47,12 +59,13 @@ const initialResource = {
 //post request to resources with above shape
 //post request to tags table, adding the names of any additional tags created by user and refetch the table
 //add option to attach a colour to your tags
-//automatic redirect to the Homepage using React router when pressing submit button
 //post request to resource_tags table with tag_id and resource_id
+//automatic redirect to the Homepage using React router when pressing submit button
+
 
 //TO DO
-//don't show add resource page when visitor not signed in
 //add Academy week to be studied 
+//colour tag inside modal
 
 
 function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: AddResourcePageProps): JSX.Element {
@@ -63,7 +76,8 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   const [unselectedTags, setUnselectedTags] = useState<ITag[]>([])
   const [modalState, setModalState] = useState<boolean>(false)
   const [newTagColour, setNewTagColour] = useState<string>("Red")
-  // const [latestResourceId, setLatestResourceId] = useState<number>(0)
+  const navigate = useNavigate()
+  const [latestResourceId, setLatestResourceId] = useState<number>(0)
 
 
   useEffect(
@@ -80,12 +94,17 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
     newResource.recommended === "Choose a resource recommendability..." ||
     newResource.type === "Choose a resource type..." ||
     newResource.url === "" ||
+    newResource.week === "Recommend a week when this should be studied..." ||
     selectedTags.length === 0
 
 
   const contentType = ['Article', 'Ebook', 'Podcast', 'Exercise', 'Exercise Set',
     'Software Tool', 'Course', 'Diagram', 'Cheat-Sheet', 'Reference', 'Resource List',
     'YouTube Channel', 'Organisation']
+
+  const weekToStudy = ["Recommend a week when this should be studied...", "Week 1: Workflows", "Week 2: Typescript and Code Quality", "Week 3: React, HTML, CSS",
+    "Week 4: React and Event handlers", "Week 5: React and useEffect", "Week 6: Frontend Consolidation",
+    "Week 7: Node.js and Express", "Week 8: SQL and Persistence", "Week 9-12: Project Work"]
 
 
   //selecting your tags
@@ -110,12 +129,28 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   }
 
   function handleNewTagColour(newTagColour: string) {
-    setNewTagColour(newTagColour)
+    let newTagHex: string;
+    if (newTagColour !== "Colour your new tag...") {
+      for (const colourCode of colourCodes) {
+        if (colourCode.colour_name === newTagColour) {
+          newTagHex = colourCode.HEX
+          setNewTagColour(newTagHex)
+          console.log(newTagHex)
+        }
+      }
+    } else {
+      setNewTagColour(newTagColour)
+    }
   }
 
   function handleNewTags(newTagName: string, newTagColour: string) {
     setNewTags([...newTags, { tag_name: newTagName, tag_colour: newTagColour }])
   }
+
+  //toast function
+  const showSignInError = (str: string) => {
+    toast.error(str);
+  };
 
 
   //backend requests
@@ -133,28 +168,29 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
       console.log(`Expected resource for backend${JSON.stringify(newResource)}`)
       const res = await axios.post(`${baseUrl}/resource}`, newResource);
       console.log(`New resource added with title: ${res.data.data.title}`)
-      // const latestResourceId: number = res.data.data.id
-      //add to the backend
-    } else {
-      console.log("Can't post if not signed in")
+      setLatestResourceId(res.data.data.id)
+      // add to the backend
     }
   }
 
-  /*async */function handlePostResourcesTags(selectedTags: ITag[]/*, resource_id: number*/) {
+  async function handlePostResourcesTags(selectedTags: ITag[], resource_id: number) {
     //do I need to make a get request for the latest Resource id? 
+    const reqBody = []
     if (currentUser !== undefined) {
       console.log("I am running!")
-      const reqBody = []
       for (const tag of selectedTags) {
         reqBody.push(tag.tag_id) //is key going to be captured here? 
       }
       console.log(`Body expected: array of tag ids: ${reqBody}`)
+      navigate("/")
     } else {
-      console.log("Can't post if not signed in")
+      showSignInError("Please sign in to add a resource")
     }
+    // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
+    // console.log(`New resource added: ${res.data.data.title}`)
+    console.log("Running!! ")
   }
-  // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
-  // console.log(`New resource added: ${res.data.data.title}`)
+
   // return (
   //   <Route
   //     path="/"
@@ -278,6 +314,27 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           </select>
         </div>
       </div>
+      <div className="input_containers">
+        <div className="input-group input-group-m mb-3">
+          <label
+            className="input-group-text"
+            htmlFor="inputGroupSelect01"
+          >
+            Recommended week to study
+          </label>
+          <select
+            className="form-select"
+            id="inputGroupSelect01"
+            defaultValue="0"
+            data-testid="add-resource-week"
+            onChange={(e) => handleAddNewResource('week', e.target.value)}
+          >
+            {weekToStudy.map(week => (
+              <option key={week}>{week}</option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <div className="input_containers">
         <div className="selectedTags" data-testid="add-resource-selected-tags">
@@ -342,29 +399,26 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
                   data-testid="add-resource-recommendability"
                   onChange={(e) => handleNewTagColour(e.target.value)}
                 >
-                  <option>Choose a colour...</option>
+                  <option>Colour your new tag...</option>
                   {/* how to change styling of options? */}
-                  <option className="text-danger">Red</option>
-                  <option>Orange</option>
-                  <option>Yellow</option>
-                  <option>Green</option>
-                  <option>Light Blue</option>
-                  <option>Dark Blue</option>
-                  <option>Purple</option>
-                  <option>Pink</option>
-
+                  {colourCodes.map(colourCode => (
+                    <option key={colourCode.colour_name} style={{ backgroundColor: colourCode.HEX }}>{colourCode.colour_name}</option>
+                  ))}
                 </select>
               </div>
               <div className="nav justify-content-center">
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleNewTags(newTag, newTagColour)}>Add new tag</button>
+                  onClick={newTagColour !== "Colour your new tag..." ? () => handleNewTags(newTag, newTagColour) : () => console.log("Add a colour to your tag, fool!")
+
+                  }>Add new tag</button>
               </div>
               {newTags.map((tag) => (
                 <span
                   key={tag.tag_name}
                   //update className
-                  className="tag-badge badge rounded-pill bg-primary"
+                  className="tag-badge badge rounded-pill"
+                  style={{ backgroundColor: tag.tag_colour }}
                 >
                   {tag.tag_name}
                 </span>
@@ -386,7 +440,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           onClick={
             ifEmptyInputs ? () => console.log("Please add inputs for every field") : () => {
               handlePostNewResource(newResource);
-              handlePostResourcesTags(selectedTags/*, latestResourceId*/)
+              handlePostResourcesTags(selectedTags, latestResourceId)
             }
           }
         >Submit new resource</button>
@@ -397,3 +451,5 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
 
 
 export default AddResourcePage;
+
+
