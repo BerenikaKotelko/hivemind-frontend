@@ -148,7 +148,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   }
 
   //toast function
-  const showSignInError = (str: string) => {
+  const showToastError = (str: string) => {
     toast.error(str);
   };
 
@@ -184,7 +184,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
       console.log(`Body expected: array of tag ids: ${reqBody}`)
       navigate("/")
     } else {
-      showSignInError("Please sign in to add a resource")
+      showToastError("Please sign in to add a resource")
     }
     // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
     // console.log(`New resource added: ${res.data.data.title}`)
@@ -225,7 +225,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
       <div className="input_containers">
         <div className="input-group input-group-lg mb-3">
           <div className="input-group-prepend" >
-            <span className="input-group-text" id="inputGroup-sizing-lg">Title</span>
+            <span className="input-group-text control-label" id="inputGroup-sizing-lg">Title</span>
           </div>
           <input
             type="text"
@@ -438,7 +438,7 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           type="button"
           className="btn btn-outline-success btn-lg"
           onClick={
-            ifEmptyInputs ? () => console.log("Please add inputs for every field") : () => {
+            ifEmptyInputs ? () => showToastError("Please add inputs for every field") : () => {
               handlePostNewResource(newResource);
               handlePostResourcesTags(selectedTags, latestResourceId)
             }
