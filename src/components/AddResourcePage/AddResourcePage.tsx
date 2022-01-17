@@ -180,6 +180,8 @@ function AddResourcePage({
     newTags: INewTag[],
     unselectedTags: ITag[]
   ) {
+    setNewTag("")
+    setNewTags([])
     console.log(newTags);
     console.log({ tags: newTags });
     console.log({ tags: [newTags] });
@@ -241,13 +243,15 @@ function AddResourcePage({
       <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
         Add a resource
       </h1>
+      <p style={{ color: "red", textAlign: "center" }}>
+        All inputs required
+      </p>
       {/* setting title to be large */}
       <div className="input_containers">
-        <div className="input-group input-group-lg mb-3">
+        <div className="input-group mb-3">
           <div className="input-group-prepend">
             <span
               className="input-group-text control-label"
-              id="inputGroup-sizing-lg"
             >
               Title
             </span>
@@ -257,6 +261,7 @@ function AddResourcePage({
             className="form-control"
             aria-label="Input title"
             data-testid="add-resource-input-title"
+            aria-required="true" //is this right? 
             value={newResource.title}
             onChange={(e) =>
               handleAddNewResource(
@@ -268,10 +273,8 @@ function AddResourcePage({
         </div>
       </div>
       <div className="input_containers">
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">Description</span>
-          </div>
+        <div className="input-group mb-3">
+          <span className="input-group-text">Description</span>
           <textarea
             className="form-control"
             aria-label="Input description"
@@ -286,7 +289,6 @@ function AddResourcePage({
           ></textarea>
         </div>
       </div>
-
       <div className="input_containers">
         <div className="input-group mb-3">
           <div className="input-group-prepend">
@@ -471,7 +473,7 @@ function AddResourcePage({
                 className="btn btn-lg"
                 onClick={() => handleUpdateTagBank(newTags, unselectedTags)}
               >
-                Submit new tags
+                Submit all tags
               </Button>
             </Modal.Footer>
           </Modal>
@@ -486,9 +488,9 @@ function AddResourcePage({
             ifEmptyInputs
               ? () => showToastError("Please add inputs for every field")
               : () => {
-                  handlePostNewResource(newResource);
-                  // handlePostResourcesTags(selectedTags, latestResourceId);
-                }
+                handlePostNewResource(newResource);
+                // handlePostResourcesTags(selectedTags, latestResourceId);
+              }
           }
         >
           Submit new resource
