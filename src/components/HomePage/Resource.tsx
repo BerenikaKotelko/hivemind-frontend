@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
-import { ITagResource } from "../../interfaces/ITag";
 import { IComment } from "../../interfaces/IComment";
 import { timestampConverterToGB } from "../../utils/timestampConverter";
 import timestampConverter from "../../utils/timestampConverter";
@@ -19,7 +18,6 @@ function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
-  const [resourceTags, setResourceTags] = useState<ITagResource[]>([]);
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
@@ -28,8 +26,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
 
   const handleAddComment = async (commentText: string) => {
     if (currentUser) {
-      await axios.post(`${baseUrl}/comments`, {
-        resource_id: resource.id,
+      await axios.post(`${baseUrl}/resources/${resource.id}/comments`, {
         author_id: currentUser.id,
         comment_text: commentText,
       });
@@ -45,23 +42,13 @@ function Resource({ resource, currentUser }: ResourceProps) {
     [baseUrl]
   );
 
-  const getTags = useCallback(
-    async (endpoint: string) => {
-      const res = await axios.get(`${baseUrl}/${endpoint}`);
-      setResourceTags(res.data.data);
-    },
-    [baseUrl]
-  );
-
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
-    getTags(`resources/${resource.id}/tags`);
     // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
     return () => {
       setComments([]);
-      setResourceTags([]);
     };
-  }, [getComments, resource.id, getTags]);
+  }, [getComments, resource.id]);
 
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
@@ -92,7 +79,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
           <p className="card-text">{resource.description}</p>
           <div className="resource-summary">
             <div>
-              {resourceTags.slice(0, 3).map((tag, index) => (
+              {resource.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
                   className="tag-badge badge rounded-pill"
@@ -147,7 +134,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       );
                     }}
                   >
-                    👍
+                    {resource.likes} 👍
                   </button>
                   <button
                     type="button"
@@ -158,7 +145,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       );
                     }}
                   >
-                    👎
+                    {resource.dislikes} 👎
                   </button>
                   {/* toggle for adding to to-study list */}
                   <ReactTooltip delayShow={300} />
@@ -190,9 +177,12 @@ function Resource({ resource, currentUser }: ResourceProps) {
                 </div>
               </div>
               <h5>{resource.type}</h5>
+              <p className="text-muted">
+                <small>{resource.week}</small>
+              </p>
               <div className="resource-details">
                 <div className="tag-container">
-                  {resourceTags.map((tag, index) => (
+                  {resource.tags.map((tag, index) => (
                     <span
                       key={index}
                       className="tag-badge badge rounded-pill"

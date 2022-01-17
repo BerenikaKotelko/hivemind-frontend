@@ -87,6 +87,7 @@ function App() {
               baseUrl={baseUrl}
               resources={resources}
               currentUser={currentUser}
+              getResources={getResources}
             />
           }
         />

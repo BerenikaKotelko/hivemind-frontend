@@ -46,6 +46,24 @@ const defaultContentTypes = {
 //   "Youtube Channel": false,
 // };
 
+const selectedTags = [
+  {
+    tag_id: 1,
+    tag_name: "React",
+    tag_colour: "#D92626",
+  },
+  {
+    tag_id: 2,
+    tag_name: "Hooks",
+    tag_colour: "#D92626",
+  },
+  {
+    tag_id: 3,
+    tag_name: "Javascript",
+    tag_colour: "#D92626",
+  },
+];
+
 const resource = {
   id: 1,
   author_id: 1,
@@ -54,10 +72,28 @@ const resource = {
   recommended: "Un-bee-table",
   url: "https://google.com",
   date_added: 1642097960,
-  likes: 1,
   name: "John Doe",
   is_faculty: true,
   type: "Video",
+  likes: 1,
+  dislikes: 0,
+  tags: [
+    {
+      tag_id: 1,
+      tag_name: "React",
+      tag_colour: "#D92626",
+    },
+    {
+      tag_id: 2,
+      tag_name: "Hooks",
+      tag_colour: "#D92626",
+    },
+    {
+      tag_id: 3,
+      tag_name: "Javascript",
+      tag_colour: "#D92626",
+    },
+  ],
 };
 
 const resources = [
@@ -69,10 +105,28 @@ const resources = [
     recommended: "Un-bee-table",
     url: "https://google.com",
     date_added: 1642097960,
-    likes: 1,
     name: "John Doe",
     is_faculty: true,
     type: "Video",
+    likes: 1,
+    dislikes: 0,
+    tags: [
+      {
+        tag_id: 1,
+        tag_name: "React",
+        tag_colour: "#D92626",
+      },
+      {
+        tag_id: 2,
+        tag_name: "Hooks",
+        tag_colour: "#D92626",
+      },
+      {
+        tag_id: 3,
+        tag_name: "Javascript",
+        tag_colour: "#D92626",
+      },
+    ],
   },
   {
     id: 1,
@@ -82,10 +136,28 @@ const resources = [
     recommended: "May-bee",
     url: "https://google.com",
     date_added: 1642097960,
-    likes: 1,
     name: "Jane Doe",
     is_faculty: false,
     type: "Article",
+    likes: 1,
+    dislikes: 0,
+    tags: [
+      {
+        tag_id: 1,
+        tag_name: "React",
+        tag_colour: "#D92626",
+      },
+      {
+        tag_id: 2,
+        tag_name: "Hooks",
+        tag_colour: "#D92626",
+      },
+      {
+        tag_id: 3,
+        tag_name: "Javascript",
+        tag_colour: "#D92626",
+      },
+    ],
   },
 ];
 
@@ -99,8 +171,10 @@ test("returns true for all if search term is empty and recommendations and conte
         resource.name,
         resource.recommended,
         resource.type,
+        resource.tags,
         defaultRecommendations,
-        defaultContentTypes
+        defaultContentTypes,
+        selectedTags
       )
     )
   ).toHaveLength(2);
@@ -115,8 +189,10 @@ test("returns true if title contains search term whilst recommendations and cont
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -127,8 +203,10 @@ test("returns true if title contains search term whilst recommendations and cont
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -139,8 +217,10 @@ test("returns true if title contains search term whilst recommendations and cont
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
 });
@@ -154,8 +234,10 @@ test("returns true if name contains search term whilst recommendations and conte
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -166,8 +248,10 @@ test("returns true if name contains search term whilst recommendations and conte
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -178,8 +262,10 @@ test("returns true if name contains search term whilst recommendations and conte
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
 });
@@ -193,8 +279,10 @@ test("returns true if either title, description or name contains search term whi
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -205,8 +293,10 @@ test("returns true if either title, description or name contains search term whi
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -217,8 +307,10 @@ test("returns true if either title, description or name contains search term whi
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       defaultRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
 });
@@ -232,8 +324,10 @@ test("returns true for resources where recommended key is true in recommendation
       resource.name,
       "Un-bee-table",
       resource.type,
+      resource.tags,
       trueRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -244,8 +338,10 @@ test("returns true for resources where recommended key is true in recommendation
       resource.name,
       "Buzzkill",
       resource.type,
+      resource.tags,
       trueRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
   expect(
@@ -256,8 +352,10 @@ test("returns true for resources where recommended key is true in recommendation
       resource.name,
       "May-bee",
       resource.type,
+      resource.tags,
       trueRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
 });
@@ -271,8 +369,10 @@ test("returns true for resources where recommended key is true in recommendation
       resource.name,
       "Un-bee-table",
       resource.type,
+      resource.tags,
       trueRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(true);
   expect(
@@ -283,8 +383,10 @@ test("returns true for resources where recommended key is true in recommendation
       resource.name,
       "Un-bee-table",
       resource.type,
+      resource.tags,
       trueRecommendations,
-      defaultContentTypes
+      defaultContentTypes,
+      selectedTags
     )
   ).toBe(false);
 });

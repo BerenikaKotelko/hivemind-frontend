@@ -16,6 +16,7 @@ interface AddResourcePageProps {
   baseUrl: string;
   resources: IResource[];
   currentUser: IUser | undefined;
+  getResources: (endpoint: string) => void;
 }
 
 const initialResource = {
@@ -67,6 +68,7 @@ function AddResourcePage({
   baseUrl,
   resources,
   currentUser,
+  getResources,
 }: AddResourcePageProps): JSX.Element {
   const [newResource, setNewResource] = useState<INewResource>(initialResource);
   const [newTag, setNewTag] = useState<string>("");
@@ -76,7 +78,6 @@ function AddResourcePage({
   const [modalState, setModalState] = useState<boolean>(false);
   const [newTagColour, setNewTagColour] = useState<string>("Red");
   const navigate = useNavigate();
-  const [latestResourceId, setLatestResourceId] = useState<number>(0);
 
   useEffect(() => {
     setUnselectedTags(tagBank);
@@ -178,8 +179,14 @@ function AddResourcePage({
     newTags: INewTag[],
     unselectedTags: ITag[]
   ) {
-    await axios.post(`${baseUrl}/tags}`, newTags);
+    setNewTag("");
+    setNewTags([]);
+    console.log(newTags);
+    console.log({ tags: newTags });
+    console.log({ tags: [newTags] });
+    await axios.post(`${baseUrl}/tags`, { tags: newTags });
     getTags("tags");
+    closeModal();
     // newTags.forEach(newTag => {
     //   setSelectedTags([...selectedTags, tagBank.filter((tag) => tag.tag_name === newTag.tag_name)]}))
     //filter over the tags returned from getTags and add only the ones with same ids as newtags to setSelectedTags
@@ -187,14 +194,14 @@ function AddResourcePage({
 
   async function handlePostNewResource(newResource: INewResource) {
     if (currentUser !== undefined) {
-      setNewResource({ ...newResource, author_id: currentUser.id });
-      console.log(
-        `Expected resource for backend${JSON.stringify(newResource)}`
-      );
-      const res = await axios.post(`${baseUrl}/resource}`, newResource);
-      console.log(`New resource added with title: ${res.data.data.title}`);
-      setLatestResourceId(res.data.data.id);
-      // add to the backend
+      const reqBody = { ...newResource, author_id: currentUser.id };
+      console.log(`Expected resource for backend${JSON.stringify(reqBody)}`);
+      const res = await axios.post(`${baseUrl}/resources`, reqBody);
+      console.log("resource id:", res.data.data.id);
+      await handlePostResourcesTags(selectedTags, res.data.data.id);
+      getResources("resources");
+    } else {
+      showToastError("Please sign in to add a resource");
     }
   }
 
@@ -202,37 +209,23 @@ function AddResourcePage({
     selectedTags: ITag[],
     resource_id: number
   ) {
-    //do I need to make a get request for the latest Resource id?
     const reqBody = [];
     if (currentUser !== undefined) {
       console.log("I am running!");
       for (const tag of selectedTags) {
-        reqBody.push(tag.tag_id); //is key going to be captured here?
+        reqBody.push(tag.tag_id);
       }
-      console.log(`Body expected: array of tag ids: ${reqBody}`);
+      axios.post(`${baseUrl}/resources/${resource_id}/tags`, {
+        tag_ids: reqBody,
+      });
       navigate("/");
-    } else {
+    } /*else {
       showToastError("Please sign in to add a resource");
-    }
+    }*/
     // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
     // console.log(`New resource added: ${res.data.data.title}`)
     console.log("Running!! ");
   }
-
-  // return (
-  //   <Route
-  //     path="/"
-  //     element={<HomePage resources={resources} currentUser={currentUser} />}
-  //   />
-  // )
-  // }
-
-  //console.logs
-  console.log(newResource);
-  // console.log(`new tag: ${newTag}`)
-  // console.log(`new tags: ${JSON.stringify(newTags)}`)
-  // console.log(`chosen colour: ${newTagColour}`)
-  // console.log(`selected tags: ${JSON.stringify(selectedTags)}`)
 
   //modal code
   const openModal = () => setModalState(true);
@@ -249,22 +242,19 @@ function AddResourcePage({
       <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
         Add a resource
       </h1>
+      <p style={{ color: "red", textAlign: "center" }}>All inputs required</p>
       {/* setting title to be large */}
       <div className="input_containers">
-        <div className="input-group input-group-lg mb-3">
+        <div className="input-group mb-3">
           <div className="input-group-prepend">
-            <span
-              className="input-group-text control-label"
-              id="inputGroup-sizing-lg"
-            >
-              Title
-            </span>
+            <span className="input-group-text control-label">Title</span>
           </div>
           <input
             type="text"
             className="form-control"
             aria-label="Input title"
             data-testid="add-resource-input-title"
+            aria-required="true" //is this right?
             value={newResource.title}
             onChange={(e) =>
               handleAddNewResource(
@@ -276,10 +266,8 @@ function AddResourcePage({
         </div>
       </div>
       <div className="input_containers">
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">Description</span>
-          </div>
+        <div className="input-group mb-3">
+          <span className="input-group-text">Description</span>
           <textarea
             className="form-control"
             aria-label="Input description"
@@ -294,7 +282,6 @@ function AddResourcePage({
           ></textarea>
         </div>
       </div>
-
       <div className="input_containers">
         <div className="input-group mb-3">
           <div className="input-group-prepend">
@@ -372,25 +359,13 @@ function AddResourcePage({
       </div>
 
       <div className="input_containers">
-        <div className="selectedTags" data-testid="add-resource-selected-tags">
-          <p>Selected tags: </p>
-          {selectedTags.map((tag) => (
-            <span
-              key={tag.tag_id}
-              className="tag-badge badge rounded-pill bg-primary"
-              onClick={() => handleRemoveTagClick(tag)}
-            >
-              {tag.tag_name}
-            </span>
-          ))}
-        </div>
-        <hr className="dropdown-divider" />
         <div className="filterTags" data-testid="add-resource-tags">
           {unselectedTags.map((tag) => (
             <span
               data-testid={`add-resource-tag-${tag.tag_id}`}
               key={tag.tag_id}
-              className="tag-badge badge rounded-pill bg-primary"
+              style={{ backgroundColor: tag.tag_colour }}
+              className="tag-badge badge rounded-pill"
               onClick={() => handleTagClick(tag)}
             >
               {tag.tag_name}
@@ -402,6 +377,20 @@ function AddResourcePage({
           >
             +
           </button>
+        </div>
+        <hr className="dropdown-divider" />
+        <div className="selectedTags" data-testid="add-resource-selected-tags">
+          <p>Selected tags: </p>
+          {selectedTags.map((tag) => (
+            <span
+              key={tag.tag_id}
+              style={{ backgroundColor: tag.tag_colour }}
+              className="tag-badge badge rounded-pill"
+              onClick={() => handleRemoveTagClick(tag)}
+            >
+              {tag.tag_name}
+            </span>
+          ))}
         </div>
         <>
           <Modal show={modalState}>
@@ -477,7 +466,7 @@ function AddResourcePage({
                 className="btn btn-lg"
                 onClick={() => handleUpdateTagBank(newTags, unselectedTags)}
               >
-                Submit new tags
+                Submit all tags
               </Button>
             </Modal.Footer>
           </Modal>
@@ -493,7 +482,7 @@ function AddResourcePage({
               ? () => showToastError("Please add inputs for every field")
               : () => {
                   handlePostNewResource(newResource);
-                  handlePostResourcesTags(selectedTags, latestResourceId);
+                  // handlePostResourcesTags(selectedTags, latestResourceId);
                 }
           }
         >

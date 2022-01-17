@@ -1,4 +1,5 @@
-// import { ITag } from "../interfaces/ITag";
+import { ITag } from "../interfaces/ITag";
+
 function filterResource(
   searchTerm: string,
   title: string,
@@ -24,9 +25,10 @@ export function filterResourceWithFilters(
   author: string,
   recommended: string,
   type: string,
+  tags: ITag[],
   recommendationValue: { [key: string]: boolean },
-  contentType: { [key: string]: boolean }
-  // selectedTags: ITag[]
+  contentType: { [key: string]: boolean },
+  selectedTags: ITag[]
 ): boolean {
   const recommendationValueArray: string[] = [];
   for (const [key, value] of Object.entries(recommendationValue)) {
@@ -43,10 +45,14 @@ export function filterResourceWithFilters(
   if (
     searchTerm === "" &&
     recommendationValueArray.length === 0 &&
-    contentTypeArray.length === 0
+    contentTypeArray.length === 0 &&
+    selectedTags.length === 0
   ) {
     return true;
   }
+
+  const resourceTagsArray = tags.map((tag: ITag) => tag.tag_name);
+  const selectedTagsArray = selectedTags.map((tag: ITag) => tag.tag_name);
 
   const searchTermLower = searchTerm.toLowerCase();
   const titleLower = title.toLowerCase();
@@ -59,7 +65,10 @@ export function filterResourceWithFilters(
     (recommendationValueArray.length === 0
       ? true
       : recommendationValueArray.includes(recommended)) &&
-    (contentTypeArray.length === 0 ? true : contentTypeArray.includes(type))
+    (contentTypeArray.length === 0 ? true : contentTypeArray.includes(type)) &&
+    (selectedTagsArray.length === 0
+      ? true
+      : selectedTagsArray.every((st) => resourceTagsArray.includes(st)))
     ? true
     : false;
 }
