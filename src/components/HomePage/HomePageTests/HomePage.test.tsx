@@ -27,11 +27,30 @@ const props = {
       description: "Description",
       recommended: "Buzzkill",
       url: "www.google.com",
+      week: "Week 1 - Git",
       date_added: 1641832782,
-      likes: "12",
       name: "Mike",
       is_faculty: true,
       type: "video",
+      likes: 3,
+      dislikes: 4,
+      tags: [
+        {
+          tag_id: 1,
+          tag_name: "React",
+          tag_colour: "#D92626",
+        },
+        {
+          tag_id: 2,
+          tag_name: "Hooks",
+          tag_colour: "#D92626",
+        },
+        {
+          tag_id: 3,
+          tag_name: "Javascript",
+          tag_colour: "#D92626",
+        },
+      ],
     },
     {
       id: 2,
@@ -40,11 +59,30 @@ const props = {
       description: "Description 2",
       recommended: "May-bee",
       url: "www.youtube.com",
+      week: "Week 2 - Html",
       date_added: 1609778382,
-      likes: "1",
       name: "Simon",
       is_faculty: true,
       type: "video",
+      likes: 9,
+      dislikes: 7,
+      tags: [
+        {
+          tag_id: 1,
+          tag_name: "React",
+          tag_colour: "#D92626",
+        },
+        {
+          tag_id: 2,
+          tag_name: "Hooks",
+          tag_colour: "#D92626",
+        },
+        {
+          tag_id: 3,
+          tag_name: "Javascript",
+          tag_colour: "#D92626",
+        },
+      ],
     },
   ],
   // comments: [
