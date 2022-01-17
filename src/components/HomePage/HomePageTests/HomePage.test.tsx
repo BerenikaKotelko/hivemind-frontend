@@ -21,7 +21,7 @@ const props = {
       url: "www.google.com",
       date_added: 1000,
       likes: "12",
-      content_type: "Video"
+      content_type: "Video",
     },
     {
       id: 2,
@@ -32,7 +32,7 @@ const props = {
       url: "www.youtube.com",
       date_added: 2000,
       likes: "1",
-      content_type: "Course"
+      content_type: "Course",
     },
   ],
 };

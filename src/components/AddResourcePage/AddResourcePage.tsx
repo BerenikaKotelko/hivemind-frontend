@@ -7,19 +7,15 @@ import { INewTag } from "../../interfaces/INewTag";
 import { IUser } from "../../interfaces/IUser";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Route } from "react-router-dom";
-import HomePage from "../HomePage/HomePage"
-import { createImportSpecifier } from "typescript";
-
 
 interface AddResourcePageProps {
   tagBank: ITag[];
-  getTags: (endpoint: string) => void
-  baseUrl: string,
-  resources: IResource[],
-  currentUser: IUser | undefined
+  getTags: (endpoint: string) => void;
+  baseUrl: string;
+  resources: IResource[];
+  currentUser: IUser | undefined;
 }
 
 const initialResource = {
@@ -29,8 +25,8 @@ const initialResource = {
   recommended: "",
   url: "",
   type: "",
-  week: ""
-}
+  week: "",
+};
 
 const colourCodes = [
   { colour_name: "Red", HEX: "#D92626" },
@@ -41,8 +37,7 @@ const colourCodes = [
   { colour_name: "Dark Blue", HEX: "#1A76BD" },
   { colour_name: "Purple", HEX: "#6F4599" },
   { colour_name: "Pink", HEX: "#BF1D89" },
-]
-
+];
 
 // export interface IResource {
 //   id?: number;
@@ -62,29 +57,30 @@ const colourCodes = [
 //post request to resource_tags table with tag_id and resource_id
 //automatic redirect to the Homepage using React router when pressing submit button
 
-
 //TO DO
-//add Academy week to be studied 
+//add Academy week to be studied
 //colour tag inside modal
 
+function AddResourcePage({
+  tagBank,
+  getTags,
+  baseUrl,
+  resources,
+  currentUser,
+}: AddResourcePageProps): JSX.Element {
+  const [newResource, setNewResource] = useState<INewResource>(initialResource);
+  const [newTag, setNewTag] = useState<string>("");
+  const [newTags, setNewTags] = useState<INewTag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
+  const [unselectedTags, setUnselectedTags] = useState<ITag[]>([]);
+  const [modalState, setModalState] = useState<boolean>(false);
+  const [newTagColour, setNewTagColour] = useState<string>("Red");
+  const navigate = useNavigate();
+  const [latestResourceId, setLatestResourceId] = useState<number>(0);
 
-function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: AddResourcePageProps): JSX.Element {
-  const [newResource, setNewResource] = useState<INewResource>(initialResource)
-  const [newTag, setNewTag] = useState<string>("")
-  const [newTags, setNewTags] = useState<INewTag[]>([])
-  const [selectedTags, setSelectedTags] = useState<ITag[]>([])
-  const [unselectedTags, setUnselectedTags] = useState<ITag[]>([])
-  const [modalState, setModalState] = useState<boolean>(false)
-  const [newTagColour, setNewTagColour] = useState<string>("Red")
-  const navigate = useNavigate()
-  const [latestResourceId, setLatestResourceId] = useState<number>(0)
-
-
-  useEffect(
-    () => {
-      setUnselectedTags(tagBank)
-    }, [tagBank]
-  )
+  useEffect(() => {
+    setUnselectedTags(tagBank);
+  }, [tagBank]);
 
   //defining constants
   //onClick condition: ensure all input fields are filled out
@@ -95,37 +91,59 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
     newResource.type === "Choose a resource type..." ||
     newResource.url === "" ||
     newResource.week === "Recommend a week when this should be studied..." ||
-    selectedTags.length === 0
+    selectedTags.length === 0;
 
+  const contentType = [
+    "Article",
+    "Ebook",
+    "Podcast",
+    "Exercise",
+    "Exercise Set",
+    "Software Tool",
+    "Course",
+    "Diagram",
+    "Cheat-Sheet",
+    "Reference",
+    "Resource List",
+    "YouTube Channel",
+    "Organisation",
+  ];
 
-  const contentType = ['Article', 'Ebook', 'Podcast', 'Exercise', 'Exercise Set',
-    'Software Tool', 'Course', 'Diagram', 'Cheat-Sheet', 'Reference', 'Resource List',
-    'YouTube Channel', 'Organisation']
-
-  const weekToStudy = ["Recommend a week when this should be studied...", "Week 1: Workflows", "Week 2: Typescript and Code Quality", "Week 3: React, HTML, CSS",
-    "Week 4: React and Event handlers", "Week 5: React and useEffect", "Week 6: Frontend Consolidation",
-    "Week 7: Node.js and Express", "Week 8: SQL and Persistence", "Week 9-12: Project Work"]
-
+  const weekToStudy = [
+    "Recommend a week when this should be studied...",
+    "Week 1: Workflows",
+    "Week 2: Typescript and Code Quality",
+    "Week 3: React, HTML, CSS",
+    "Week 4: React and Event handlers",
+    "Week 5: React and useEffect",
+    "Week 6: Frontend Consolidation",
+    "Week 7: Node.js and Express",
+    "Week 8: SQL and Persistence",
+    "Week 9-12: Project Work",
+  ];
 
   //selecting your tags
   function handleTagClick(tag: ITag) {
-    setUnselectedTags([...unselectedTags.filter((element) => element.tag_name !== tag.tag_name)]);
+    setUnselectedTags([
+      ...unselectedTags.filter((element) => element.tag_name !== tag.tag_name),
+    ]);
     setSelectedTags([...selectedTags, tag]);
   }
 
   function handleRemoveTagClick(tag: ITag) {
-    setSelectedTags([...selectedTags.filter((element) => element.tag_name !== tag.tag_name)]);
+    setSelectedTags([
+      ...selectedTags.filter((element) => element.tag_name !== tag.tag_name),
+    ]);
     setUnselectedTags([...unselectedTags, tag]);
   }
 
-
   //input handler functions
   function handleAddNewResource(property: string, value: string | number) {
-    setNewResource({ ...newResource, [property]: value })
+    setNewResource({ ...newResource, [property]: value });
   }
 
   function handleNewTag(newTag: string) {
-    setNewTag(newTag.replace(/\b\w/g, c => c.toUpperCase()))
+    setNewTag(newTag.replace(/\b\w/g, (c) => c.toUpperCase()));
   }
 
   function handleNewTagColour(newTagColour: string) {
@@ -133,18 +151,21 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
     if (newTagColour !== "Colour your new tag...") {
       for (const colourCode of colourCodes) {
         if (colourCode.colour_name === newTagColour) {
-          newTagHex = colourCode.HEX
-          setNewTagColour(newTagHex)
-          console.log(newTagHex)
+          newTagHex = colourCode.HEX;
+          setNewTagColour(newTagHex);
+          console.log(newTagHex);
         }
       }
     } else {
-      setNewTagColour(newTagColour)
+      setNewTagColour(newTagColour);
     }
   }
 
   function handleNewTags(newTagName: string, newTagColour: string) {
-    setNewTags([...newTags, { tag_name: newTagName, tag_colour: newTagColour }])
+    setNewTags([
+      ...newTags,
+      { tag_name: newTagName, tag_colour: newTagColour },
+    ]);
   }
 
   //toast function
@@ -152,11 +173,13 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
     toast.error(str);
   };
 
-
   //backend requests
-  async function handleUpdateTagBank(newTags: INewTag[], unselectedTags: ITag[]) {
+  async function handleUpdateTagBank(
+    newTags: INewTag[],
+    unselectedTags: ITag[]
+  ) {
     await axios.post(`${baseUrl}/tags}`, newTags);
-    getTags("tags")
+    getTags("tags");
     // newTags.forEach(newTag => {
     //   setSelectedTags([...selectedTags, tagBank.filter((tag) => tag.tag_name === newTag.tag_name)]}))
     //filter over the tags returned from getTags and add only the ones with same ids as newtags to setSelectedTags
@@ -164,31 +187,36 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
 
   async function handlePostNewResource(newResource: INewResource) {
     if (currentUser !== undefined) {
-      setNewResource({ ...newResource, author_id: currentUser.id })
-      console.log(`Expected resource for backend${JSON.stringify(newResource)}`)
+      setNewResource({ ...newResource, author_id: currentUser.id });
+      console.log(
+        `Expected resource for backend${JSON.stringify(newResource)}`
+      );
       const res = await axios.post(`${baseUrl}/resource}`, newResource);
-      console.log(`New resource added with title: ${res.data.data.title}`)
-      setLatestResourceId(res.data.data.id)
+      console.log(`New resource added with title: ${res.data.data.title}`);
+      setLatestResourceId(res.data.data.id);
       // add to the backend
     }
   }
 
-  async function handlePostResourcesTags(selectedTags: ITag[], resource_id: number) {
-    //do I need to make a get request for the latest Resource id? 
-    const reqBody = []
+  async function handlePostResourcesTags(
+    selectedTags: ITag[],
+    resource_id: number
+  ) {
+    //do I need to make a get request for the latest Resource id?
+    const reqBody = [];
     if (currentUser !== undefined) {
-      console.log("I am running!")
+      console.log("I am running!");
       for (const tag of selectedTags) {
-        reqBody.push(tag.tag_id) //is key going to be captured here? 
+        reqBody.push(tag.tag_id); //is key going to be captured here?
       }
-      console.log(`Body expected: array of tag ids: ${reqBody}`)
-      navigate("/")
+      console.log(`Body expected: array of tag ids: ${reqBody}`);
+      navigate("/");
     } else {
-      showToastError("Please sign in to add a resource")
+      showToastError("Please sign in to add a resource");
     }
     // const res = await axios.post(`${baseUrl}/${`resource/${resource_id}/tags`}`, reqBody);
     // console.log(`New resource added: ${res.data.data.title}`)
-    console.log("Running!! ")
+    console.log("Running!! ");
   }
 
   // return (
@@ -199,33 +227,38 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
   // )
   // }
 
-
   //console.logs
-  console.log(newResource)
+  console.log(newResource);
   // console.log(`new tag: ${newTag}`)
   // console.log(`new tags: ${JSON.stringify(newTags)}`)
   // console.log(`chosen colour: ${newTagColour}`)
   // console.log(`selected tags: ${JSON.stringify(selectedTags)}`)
 
-
   //modal code
-  const openModal = () => setModalState(true)
-  const closeModal = () => setModalState(false)
+  const openModal = () => setModalState(true);
+  const closeModal = () => setModalState(false);
 
   function onClosingModal() {
-    closeModal()
-    setNewTag("")
-    setNewTags([])
+    closeModal();
+    setNewTag("");
+    setNewTags([]);
   }
 
   return (
     <div className="container">
-      <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>Add a resource</h1>
+      <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
+        Add a resource
+      </h1>
       {/* setting title to be large */}
       <div className="input_containers">
         <div className="input-group input-group-lg mb-3">
-          <div className="input-group-prepend" >
-            <span className="input-group-text control-label" id="inputGroup-sizing-lg">Title</span>
+          <div className="input-group-prepend">
+            <span
+              className="input-group-text control-label"
+              id="inputGroup-sizing-lg"
+            >
+              Title
+            </span>
           </div>
           <input
             type="text"
@@ -233,7 +266,12 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             aria-label="Input title"
             data-testid="add-resource-input-title"
             value={newResource.title}
-            onChange={(e) => handleAddNewResource('title', e.target.value.replace(/^\w/gm, c => c.toUpperCase()))}
+            onChange={(e) =>
+              handleAddNewResource(
+                "title",
+                e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
+              )
+            }
           />
         </div>
       </div>
@@ -247,7 +285,12 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             aria-label="Input description"
             data-testid="add-resource-input-description"
             value={newResource.description}
-            onChange={(e) => handleAddNewResource('description', e.target.value.replace(/^\w/gm, c => c.toUpperCase()))}
+            onChange={(e) =>
+              handleAddNewResource(
+                "description",
+                e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
+              )
+            }
           ></textarea>
         </div>
       </div>
@@ -255,7 +298,9 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
       <div className="input_containers">
         <div className="input-group mb-3">
           <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">URL</span>
+            <span className="input-group-text" id="basic-addon1">
+              URL
+            </span>
           </div>
           <input
             type="text"
@@ -263,16 +308,13 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             aria-label="Input URL"
             data-testid="add-resource-input-url"
             value={newResource.url}
-            onChange={(e) => handleAddNewResource('url', e.target.value)}
+            onChange={(e) => handleAddNewResource("url", e.target.value)}
           />
         </div>
       </div>
       <div className="input_containers">
         <div className="input-group input-group-m mb-3">
-          <label
-            className="input-group-text"
-            htmlFor="inputGroupSelect01"
-          >
+          <label className="input-group-text" htmlFor="inputGroupSelect01">
             Resource Type
           </label>
           <select
@@ -280,23 +322,18 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             id="inputGroupSelect01"
             defaultValue="0"
             data-testid="add-resource-type"
-            onChange={(e) => handleAddNewResource('type', e.target.value)}
+            onChange={(e) => handleAddNewResource("type", e.target.value)}
           >
             <option>Choose a resource type...</option>
             {contentType.map((type) => {
-              return (
-                <option key={type}>{type}</option>
-              )
+              return <option key={type}>{type}</option>;
             })}
           </select>
         </div>
       </div>
       <div className="input_containers">
         <div className="input-group input-group-m mb-3">
-          <label
-            className="input-group-text"
-            htmlFor="inputGroupSelect01"
-          >
+          <label className="input-group-text" htmlFor="inputGroupSelect01">
             Recommendability
           </label>
           <select
@@ -304,22 +341,20 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             id="inputGroupSelect01"
             defaultValue="0"
             data-testid="add-resource-recommendability"
-            onChange={(e) => handleAddNewResource('recommended', e.target.value)}
+            onChange={(e) =>
+              handleAddNewResource("recommended", e.target.value)
+            }
           >
             <option>Choose a recommendability...</option>
             <option>Un-bee-table</option>
             <option>May-bee</option>
             <option>Buzzkill</option>
-
           </select>
         </div>
       </div>
       <div className="input_containers">
         <div className="input-group input-group-m mb-3">
-          <label
-            className="input-group-text"
-            htmlFor="inputGroupSelect01"
-          >
+          <label className="input-group-text" htmlFor="inputGroupSelect01">
             Recommended week to study
           </label>
           <select
@@ -327,9 +362,9 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             id="inputGroupSelect01"
             defaultValue="0"
             data-testid="add-resource-week"
-            onChange={(e) => handleAddNewResource('week', e.target.value)}
+            onChange={(e) => handleAddNewResource("week", e.target.value)}
           >
-            {weekToStudy.map(week => (
+            {weekToStudy.map((week) => (
               <option key={week}>{week}</option>
             ))}
           </select>
@@ -340,9 +375,11 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
         <div className="selectedTags" data-testid="add-resource-selected-tags">
           <p>Selected tags: </p>
           {selectedTags.map((tag) => (
-            <span key={tag.tag_id}
+            <span
+              key={tag.tag_id}
               className="tag-badge badge rounded-pill bg-primary"
-              onClick={() => handleRemoveTagClick(tag)}>
+              onClick={() => handleRemoveTagClick(tag)}
+            >
               {tag.tag_name}
             </span>
           ))}
@@ -361,14 +398,14 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           ))}
           <button
             onClick={openModal}
-            className="tag-badge badge rounded-pill bg-success">
+            className="tag-badge badge rounded-pill bg-success"
+          >
             +
           </button>
         </div>
         <>
           <Modal show={modalState}>
-            <Modal.Header closeButton onClick={onClosingModal}>
-            </Modal.Header>
+            <Modal.Header closeButton onClick={onClosingModal}></Modal.Header>
             <Modal.Body>
               <div className="input-group mb-3">
                 <input
@@ -377,7 +414,8 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
                   placeholder="Input tag"
                   aria-label="Input new tag"
                   value={newTag}
-                  onChange={(e) => handleNewTag(e.target.value)} />
+                  onChange={(e) => handleNewTag(e.target.value)}
+                />
               </div>
               {/* <input
                 placeholder="Input tag"
@@ -401,17 +439,27 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
                 >
                   <option>Colour your new tag...</option>
                   {/* how to change styling of options? */}
-                  {colourCodes.map(colourCode => (
-                    <option key={colourCode.colour_name} style={{ backgroundColor: colourCode.HEX }}>{colourCode.colour_name}</option>
+                  {colourCodes.map((colourCode) => (
+                    <option
+                      key={colourCode.colour_name}
+                      style={{ backgroundColor: colourCode.HEX }}
+                    >
+                      {colourCode.colour_name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="nav justify-content-center">
                 <button
                   className="btn btn-primary"
-                  onClick={newTagColour !== "Colour your new tag..." ? () => handleNewTags(newTag, newTagColour) : () => console.log("Add a colour to your tag, fool!")
-
-                  }>Add new tag</button>
+                  onClick={
+                    newTagColour !== "Colour your new tag..."
+                      ? () => handleNewTags(newTag, newTagColour)
+                      : () => console.log("Add a colour to your tag, fool!")
+                  }
+                >
+                  Add new tag
+                </button>
               </div>
               {newTags.map((tag) => (
                 <span
@@ -427,7 +475,10 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
             <Modal.Footer className="nav justify-content-center">
               <Button
                 className="btn btn-lg"
-                onClick={() => handleUpdateTagBank(newTags, unselectedTags)}>Submit new tags</Button>
+                onClick={() => handleUpdateTagBank(newTags, unselectedTags)}
+              >
+                Submit new tags
+              </Button>
             </Modal.Footer>
           </Modal>
         </>
@@ -438,18 +489,19 @@ function AddResourcePage({ tagBank, getTags, baseUrl, resources, currentUser }: 
           type="button"
           className="btn btn-outline-success btn-lg"
           onClick={
-            ifEmptyInputs ? () => showToastError("Please add inputs for every field") : () => {
-              handlePostNewResource(newResource);
-              handlePostResourcesTags(selectedTags, latestResourceId)
-            }
+            ifEmptyInputs
+              ? () => showToastError("Please add inputs for every field")
+              : () => {
+                handlePostNewResource(newResource);
+                handlePostResourcesTags(selectedTags, latestResourceId);
+              }
           }
-        >Submit new resource</button>
+        >
+          Submit new resource
+        </button>
       </div>
-    </div >
+    </div>
   );
 }
 
-
 export default AddResourcePage;
-
-

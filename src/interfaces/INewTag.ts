@@ -1,4 +1,4 @@
 export interface INewTag {
-    tag_name: string;
-    tag_colour: string;
+  tag_name: string;
+  tag_colour: string;
 }

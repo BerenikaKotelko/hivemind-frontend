@@ -13,13 +13,13 @@ import axios from "axios";
 import { IUser } from "./interfaces/IUser";
 import { IResource } from "./interfaces/IResource";
 import { ITag } from "./interfaces/ITag";
-import { setEmitFlags } from "typescript";
+// import { setEmitFlags } from "typescript";
 
 function App() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>();
   const [resources, setResources] = useState<IResource[]>([]);
-  const [tagBank, setTagBank] = useState<ITag[]>([])
+  const [tagBank, setTagBank] = useState<ITag[]>([]);
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
@@ -42,15 +42,15 @@ function App() {
   const getTags = useCallback(
     async (endpoint: string) => {
       const res = await axios.get(`${baseUrl}/${endpoint}`);
-      setTagBank(res.data.data)
+      setTagBank(res.data.data);
     },
     [baseUrl]
-  )
+  );
 
   useEffect(() => {
     getUsers("users");
     getResources("resources");
-    getTags("tags")
+    getTags("tags");
   }, [getUsers, getResources, getTags]);
 
   return (
@@ -80,7 +80,16 @@ function App() {
         <Route path="study-list" element={<>study list</>} />
         <Route
           path="add-resource"
-          element={<AddResourcePage tagBank={tagBank} getTags={getTags} baseUrl={baseUrl} resources={resources} currentUser={currentUser} />} />
+          element={
+            <AddResourcePage
+              tagBank={tagBank}
+              getTags={getTags}
+              baseUrl={baseUrl}
+              resources={resources}
+              currentUser={currentUser}
+            />
+          }
+        />
       </Routes>
     </>
   );

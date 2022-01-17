@@ -6,5 +6,5 @@ export interface IResource {
   recommended: string;
   url: string;
   date_added: number;
-  content_type: string
+  content_type: string;
 }
