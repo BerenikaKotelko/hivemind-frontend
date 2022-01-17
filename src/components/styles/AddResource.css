@@ -8,3 +8,8 @@
     padding-top: 10px
 }
 
+/* how to add astericks?  */
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
+  }
