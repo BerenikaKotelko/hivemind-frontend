@@ -4,6 +4,8 @@ import "@testing-library/jest-dom";
 // the component to test
 import HomePage from "../HomePage";
 import { render, screen } from "@testing-library/react";
+// import Resource from "../Resource";
+// import SearchBar from "../SearchBar";
 
 const props = {
   currentUser: {
@@ -11,31 +13,97 @@ const props = {
     name: "Mike",
     is_faculty: false,
   },
+  tags: [
+    { tag_id: 1, tag_name: "Javascript" },
+    { tag_id: 2, tag_name: "Hooks" },
+    { tag_id: 3, tag_name: "Testing" },
+  ],
+
   resources: [
     {
       id: 1,
       author_id: 1,
       title: "Test resource",
       description: "Description",
-      recommended: "nope",
+      recommended: "Buzzkill",
       url: "www.google.com",
-      date_added: 1000,
+      date_added: 1641832782,
       likes: "12",
-      content_type: "Video",
+      name: "Mike",
+      is_faculty: true,
+      type: "video",
     },
     {
       id: 2,
       author_id: 2,
       title: "Test resource 2",
       description: "Description 2",
-      recommended: "yep",
+      recommended: "May-bee",
       url: "www.youtube.com",
-      date_added: 2000,
+      date_added: 1609778382,
       likes: "1",
-      content_type: "Course",
+      name: "Simon",
+      is_faculty: true,
+      type: "video",
     },
   ],
+  // comments: [
+  //   {
+  //     comment_id: 5,
+  //     resource_id: 1,
+  //     author_id: 2,
+  //     comment_text: "What a rad resource",
+  //     date_added: "1641832782",
+  //     name: "Katy Perry",
+  //   },
+  //   {
+  //     comment_id: 3,
+  //     resource_id: 1,
+  //     author_id: 1,
+  //     comment_text: "Testing endpoint comment",
+  //     date_added: "1641465486",
+  //     name: "Barack Obama",
+  //   },
+  //   {
+  //     comment_id: 1,
+  //     resource_id: 1,
+  //     author_id: 1,
+  //     comment_text: "My first comment",
+  //     date_added: "1641313407",
+  //     name: "Barack Obama",
+  //   },
+  // ],
 };
+
+// const resourceProps = {
+//   currentUser: {
+//     id: 1,
+//     name: "Mike",
+//     is_faculty: false,
+//   },
+//   resource: {
+//     id: 1,
+//     author_id: 1,
+//     title: "Test resource",
+//     description: "Description",
+//     recommended: "Buzzkill",
+//     url: "www.google.com",
+//     date_added: 1641832782,
+//     likes: "12",
+//     name: "Mike",
+//     is_faculty: true,
+//   },
+// };
+
+// How do?
+//const searchBarProps = {
+// searchTerm: "",
+// setSearchTerm: () => void
+// }
+
+//testing whether the Home Page loads and has content
+
+//this:
 
 test.skip("loads items eventually", async () => {
   const div = document.createElement("div");
@@ -47,6 +115,44 @@ it("renders Test resource as text on page", () => {
   render(<HomePage {...props} />);
   const resourceText = screen.getByTestId("resource1");
   expect(resourceText).toHaveTextContent("Test resource");
+  expect(resourceText).toHaveTextContent("Added by Mike");
+  expect(resourceText).toHaveTextContent("Description");
+  expect(resourceText).toHaveTextContent("www.google.com");
+  expect(resourceText).toHaveTextContent("Buzzkill");
+  expect(resourceText).toHaveTextContent("Created 10/01/2022");
   const resourceText2 = screen.getByTestId("resource2");
   expect(resourceText2).toHaveTextContent("Test resource 2");
+  expect(resourceText2).toHaveTextContent("Added by Simon");
+  expect(resourceText2).toHaveTextContent("Description 2");
+  expect(resourceText2).toHaveTextContent("www.youtube.com");
+  expect(resourceText2).toHaveTextContent("May-bee");
+  expect(resourceText2).toHaveTextContent("Created 04/01/2021");
 });
+
+// it("loads comments for a specific resource", async () => {
+//   render(<HomePage {...props} />);
+//   const commentText = screen.getByTestId("resource1");
+//   expect(commentText).toHaveTextContent("What a rad resource");
+//   expect(commentText).toHaveTextContent("Katy Perry");
+// });
+
+// it('calls onClick prop when clicked', async () => {
+//   const handleClick = jest.fn()
+//   render(<Resource {...resourceProps}></Resource>)
+//   fireEvent.click(screen.getByText(/Expand/i))
+//   expect(handleClick).toHaveBeenCalledTimes(1)
+// })
+
+//Testing whether the search bar loads and has content
+// test("loads items eventually", async () => {
+//   const div = document.createElement("div");
+//   //bob?
+//   ReactDOM.render(<SearchBar {...props} />, div);
+// });
+// it("renders Test resource as text on page", () => {
+//   render(<HomePage {...props} />);
+//   const resourceText = screen.getByTestId("resource1");
+//   expect(resourceText).toHaveTextContent("Test resource");
+//   const resourceText2 = screen.getByTestId("resource2");
+//   expect(resourceText2).toHaveTextContent("Test resource 2");
+// });

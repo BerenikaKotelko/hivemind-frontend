@@ -1,6 +1,12 @@
-.filterTags {
+.filterType {
   display: flex;
   flex-wrap: wrap;
+}
+
+.filterRecommendations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .tag-badge {
@@ -9,4 +15,8 @@
 
 .tag-react {
   color: blueviolet;
+}
+
+.contentType {
+  width: 29%;
 }

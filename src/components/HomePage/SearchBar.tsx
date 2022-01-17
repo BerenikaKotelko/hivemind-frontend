@@ -1,41 +1,52 @@
-import { useState } from "react";
+import { ITag } from "../../interfaces/ITag";
 import "../styles/SearchBar.css";
 
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  unselectedTags: ITag[];
+  selectedTags: ITag[];
+  handleTagClick: (tag: ITag) => void;
+  handleRemoveTagClick: (tag: ITag) => void;
+  handleContentTypeClick: (checked: boolean, contentType: string) => void;
+  handleRecommendationClick: (checked: boolean, recommendation: string) => void;
+  contentType: { [key: string]: boolean };
+  recommendationValue: { [key: string]: boolean };
+  handleResetFilters: () => void;
 }
+
+// const contentType = [
+//   "Video",
+//   "Article",
+//   "Ebook",
+//   "Podcast",
+//   "Exercise",
+//   "Exercise Set",
+//   "Software Tool",
+//   "Course",
+//   "Diagram",
+//   "Cheat-Sheet",
+//   "Reference",
+//   "Resource List",
+//   "Youtube Channel",
+//   "Organisation",
+// ];
+
+// const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
 
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
+  unselectedTags,
+  selectedTags,
+  handleTagClick,
+  handleRemoveTagClick,
+  handleContentTypeClick,
+  handleRecommendationClick,
+  recommendationValue,
+  contentType,
+  handleResetFilters,
 }: SearchBarProps) {
-  const [tags, setTags] = useState<string[]>([
-    "React",
-    "Javascript",
-    "Bootstrap",
-    "Express",
-    "BackEnd",
-    "FrontEnd",
-    "Typescript",
-    "Git",
-    "Cypress",
-    "Testing",
-    "Jest",
-  ]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  //toggling between tags showing and not in selected inside filter in searchbar
-
-  function handleTagClick(tag: string) {
-    setTags([...tags.filter((element) => element !== tag)]);
-    setSelectedTags([...selectedTags, tag]);
-  }
-
-  function handleRemoveTagClick(tag: string) {
-    setSelectedTags([...selectedTags.filter((element) => element !== tag)]);
-    setTags([...tags, tag]);
-  }
   return (
     <>
       <div className="d-flex">
@@ -47,12 +58,6 @@ export default function SearchBar({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {/* <button
-          className="btn btn-outline-success search-btn me-2"
-          type="submit"
-        >
-          Search
-        </button> */}
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
@@ -75,63 +80,93 @@ export default function SearchBar({
                 <h5 className="modal-title" id="staticBackdropLabel">
                   Set Filters
                 </h5>
-                <button
+                {/* <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                ></button>
+                ></button> */}
               </div>
               <div className="modal-body">
+                <h6>Resource Type</h6>
                 <div className="filterType">
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect01"
-                    >
-                      Resource Type
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect01"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose resource...</option>
-                      <option value="1">Video</option>
-                      <option value="2">Podcast</option>
-                      <option value="3">Exercise</option>
-                    </select>
-                  </div>
-                  <div className="input-group input-group-sm mb-3">
-                    <label
-                      className="input-group-text"
-                      htmlFor="inputGroupSelect02"
-                    >
-                      Recommendation value
-                    </label>
-                    <select
-                      className="form-select"
-                      id="inputGroupSelect02"
-                      defaultValue="0"
-                    >
-                      <option value="0">Choose value...</option>
-                      <option value="1">Un-bee-liveable</option>
-                      <option value="2">May-bee</option>
-                      <option value="3">Buzzkill</option>
-                    </select>
-                  </div>
+                  {Object.entries(contentType).map(
+                    ([contentKey, contentValue], index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline contentType"
+                        >
+                          <input
+                            onChange={(e) =>
+                              handleContentTypeClick(
+                                e.currentTarget.checked,
+                                contentKey
+                              )
+                            }
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`typecheckbox${index}`}
+                            value={contentKey}
+                            checked={contentValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`typecheckbox${index}`}
+                          >
+                            {contentKey}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+                <h6>Recommendation Value</h6>
+                <div className="filterRecommendations">
+                  {Object.entries(recommendationValue).map(
+                    ([recKey, recValue], index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="form-check form-check-inline"
+                        >
+                          <input
+                            onChange={(e) =>
+                              handleRecommendationClick(
+                                e.currentTarget.checked,
+                                recKey
+                              )
+                            }
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`reccheckbox${index}`}
+                            value={recKey}
+                            checked={recValue}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`reccheckbox${index}`}
+                          >
+                            {recKey}
+                          </label>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
                 <hr className="dropdown-divider" />
                 <div className="filterTags">
-                  {tags.map((tag, index) => (
+                  {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      role="button"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
@@ -141,12 +176,14 @@ export default function SearchBar({
                   {selectedTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      role="button"
+                      style={{ backgroundColor: tag.tag_colour }}
                       onClick={() => {
                         handleRemoveTagClick(tag);
                       }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
@@ -156,6 +193,7 @@ export default function SearchBar({
                   type="button"
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
+                  onClick={handleResetFilters}
                 >
                   Reset filters
                 </button>
