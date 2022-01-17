@@ -78,7 +78,6 @@ function AddResourcePage({
   const [modalState, setModalState] = useState<boolean>(false);
   const [newTagColour, setNewTagColour] = useState<string>("Red");
   const navigate = useNavigate();
-  const [latestResourceId, setLatestResourceId] = useState<number>(0);
 
   useEffect(() => {
     setUnselectedTags(tagBank);
@@ -180,8 +179,8 @@ function AddResourcePage({
     newTags: INewTag[],
     unselectedTags: ITag[]
   ) {
-    setNewTag("")
-    setNewTags([])
+    setNewTag("");
+    setNewTags([]);
     console.log(newTags);
     console.log({ tags: newTags });
     console.log({ tags: [newTags] });
@@ -243,25 +242,19 @@ function AddResourcePage({
       <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
         Add a resource
       </h1>
-      <p style={{ color: "red", textAlign: "center" }}>
-        All inputs required
-      </p>
+      <p style={{ color: "red", textAlign: "center" }}>All inputs required</p>
       {/* setting title to be large */}
       <div className="input_containers">
         <div className="input-group mb-3">
           <div className="input-group-prepend">
-            <span
-              className="input-group-text control-label"
-            >
-              Title
-            </span>
+            <span className="input-group-text control-label">Title</span>
           </div>
           <input
             type="text"
             className="form-control"
             aria-label="Input title"
             data-testid="add-resource-input-title"
-            aria-required="true" //is this right? 
+            aria-required="true" //is this right?
             value={newResource.title}
             onChange={(e) =>
               handleAddNewResource(
@@ -488,9 +481,9 @@ function AddResourcePage({
             ifEmptyInputs
               ? () => showToastError("Please add inputs for every field")
               : () => {
-                handlePostNewResource(newResource);
-                // handlePostResourcesTags(selectedTags, latestResourceId);
-              }
+                  handlePostNewResource(newResource);
+                  // handlePostResourcesTags(selectedTags, latestResourceId);
+                }
           }
         >
           Submit new resource
