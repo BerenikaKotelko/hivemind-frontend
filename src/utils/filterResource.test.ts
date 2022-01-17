@@ -29,22 +29,22 @@ const defaultContentTypes = {
   "Youtube Channel": false,
 };
 
-const trueContentTypes = {
-  Article: true,
-  "Cheat-Sheet": false,
-  Course: false,
-  Diagram: false,
-  Ebook: false,
-  Exercise: false,
-  "Exercise Set": false,
-  Podcast: false,
-  Organisation: false,
-  Reference: false,
-  "Resource List": false,
-  "Software Tool": false,
-  Video: false,
-  "Youtube Channel": false,
-};
+// const trueContentTypes = {
+//   Article: true,
+//   "Cheat-Sheet": false,
+//   Course: false,
+//   Diagram: false,
+//   Ebook: false,
+//   Exercise: false,
+//   "Exercise Set": false,
+//   Podcast: false,
+//   Organisation: false,
+//   Reference: false,
+//   "Resource List": false,
+//   "Software Tool": false,
+//   Video: false,
+//   "Youtube Channel": false,
+// };
 
 const resource = {
   id: 1,
@@ -262,8 +262,7 @@ test("returns true for resources where recommended key is true in recommendation
   ).toBe(false);
 });
 
-test("returns true for resources where recommended key is true in recommendationsValue object AND\
- title, description or name includes search term", () => {
+test("returns true for resources where recommended key is true in recommendationsValue object AND title, description or name includes search term", () => {
   expect(
     filterResourceWithFilters(
       "Title",
