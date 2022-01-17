@@ -1,65 +1,104 @@
 import "../styles/Resource.css";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { IUser } from "../../interfaces/IUser";
 import { IResource } from "../../interfaces/IResource";
+import { ITagResource } from "../../interfaces/ITag";
+import { IComment } from "../../interfaces/IComment";
+import { timestampConverterToGB } from "../../utils/timestampConverter";
 import timestampConverter from "../../utils/timestampConverter";
+import ReactTooltip from "react-tooltip";
 
 interface ResourceProps {
   resource: IResource;
   currentUser: IUser | undefined;
 }
 
-const tags = [
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-  "React",
-  "Javascript",
-  "Bootstrap",
-  "Git",
-  "Cypress",
-  "Testing",
-  "Jest",
-];
-
-const comments = [
-  "Hey! this is a really useful resource, thanks for sharing :)",
-  "Wow I've never thought about it this way before.",
-  "I agree, this resource is bee-rilliant",
-];
-
 function Resource({ resource, currentUser }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
+  const [comments, setComments] = useState<IComment[]>([]);
+  const [commentText, setCommentText] = useState("");
+  const [resourceTags, setResourceTags] = useState<ITagResource[]>([]);
+  const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
   };
+
+  const handleAddComment = async (commentText: string) => {
+    if (currentUser) {
+      await axios.post(`${baseUrl}/comments`, {
+        resource_id: resource.id,
+        author_id: currentUser.id,
+        comment_text: commentText,
+      });
+    }
+    getComments(`resources/${resource.id}/comments`);
+    setCommentText("");
+  };
+  const getComments = useCallback(
+    async (endpoint: string) => {
+      const res = await axios.get(`${baseUrl}/${endpoint}`);
+      setComments(res.data.data);
+    },
+    [baseUrl]
+  );
+
+  const getTags = useCallback(
+    async (endpoint: string) => {
+      const res = await axios.get(`${baseUrl}/${endpoint}`);
+      setResourceTags(res.data.data);
+    },
+    [baseUrl]
+  );
+
+  useEffect(() => {
+    getComments(`resources/${resource.id}/comments`);
+    getTags(`resources/${resource.id}/tags`);
+    // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+    return () => {
+      setComments([]);
+      setResourceTags([]);
+    };
+  }, [getComments, resource.id, getTags]);
+
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">{resource.title}</h5>
+          <div className="card-title">
+            <div className="card-title-main">
+              <h5>{resource.title} </h5>
+              <em>
+                <small className="text-muted">
+                  submitted by: {resource.name}
+                </small>
+              </em>
+            </div>
+            <div className="card-title-details">
+              <p>
+                <em>
+                  <small className="text-muted">{resource.type}</small>
+                </em>
+              </p>
+              <p>
+                <em>
+                  <small className="text-muted">{resource.recommended}</small>
+                </em>
+              </p>
+            </div>
+          </div>
           <p className="card-text">{resource.description}</p>
           <div className="resource-summary">
             <div>
-              {tags.slice(0, 3).map((tag, index) => (
+              {resourceTags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="tag-badge badge rounded-pill bg-primary"
+                  className="tag-badge badge rounded-pill"
+                  style={{ backgroundColor: tag.tag_colour }}
                 >
-                  {tag}
+                  {tag.tag_name}
                 </span>
               ))}
             </div>
@@ -87,17 +126,17 @@ function Resource({ resource, currentUser }: ResourceProps) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{resource.title}</h5>
-              <button
+              {/* <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-              ></button>
+              ></button> */}
             </div>
             <div className="modal-body">
               <div className="resource-header">
-                <p>Created {timestampConverter(resource.date_added)}</p>
-                <p>Added by {resource.author_id}</p>
+                <p>Created {timestampConverterToGB(resource.date_added)}</p>
+                <p>Added by {resource.name}</p>
                 <div className="header-buttons">
                   <button
                     type="button"
@@ -106,7 +145,6 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to like a resource!"
                       );
-                      console.log("thumbs up");
                     }}
                   >
                     👍
@@ -118,46 +156,49 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to dislike a resource!"
                       );
-                      console.log("thumbs down");
                     }}
                   >
                     👎
                   </button>
                   {/* toggle for adding to to-study list */}
-                  <div className="add-study-list-toggle form-check form-switch ">
+                  <ReactTooltip delayShow={300} />
+                  <div
+                    className="add-study-list-toggle form-check form-switch"
+                    data-tip="Toggle for adding to study list"
+                  >
                     {currentUser ? (
                       <input
                         className="form-check-input"
                         type="checkbox"
                         role="switch"
-                        id="flexSwitchCheckChecked"
-                        disabled
+                        id="flexSwitchCheck"
                       />
                     ) : (
-                      //should disabled be below?
                       <input
                         className="form-check-input"
                         type="checkbox"
                         role="switch"
-                        id="flexSwitchCheckChecked"
+                        id="flexSwitchCheckDisabled"
+                        disabled
                       />
                     )}
                     <label
                       className="form-check-label"
-                      htmlFor="flexSwitchCheckChecked"
+                      htmlFor="flexSwitchCheck"
                     ></label>
                   </div>
                 </div>
               </div>
-              <h5>{resource.title}</h5>
+              <h5>{resource.type}</h5>
               <div className="resource-details">
                 <div className="tag-container">
-                  {tags.map((tag, index) => (
+                  {resourceTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="tag-badge badge rounded-pill bg-primary"
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
                     >
-                      {tag}
+                      {tag.tag_name}
                     </span>
                   ))}
                 </div>
@@ -178,6 +219,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
                     aria-label="With textarea"
                     placeholder="Add a comment.."
                     aria-describedby="button-addon2"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   ></textarea>
                   <button
                     className="btn btn-outline-secondary"
@@ -187,6 +230,7 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to post a comment!"
                       );
+                      handleAddComment(commentText);
                     }}
                   >
                     Send
@@ -195,46 +239,48 @@ function Resource({ resource, currentUser }: ResourceProps) {
                 {!expanded && (
                   <>
                     <ul className="list-group comment-group">
-                      {comments.slice(0, 4).map((comment, idx) => (
+                      {comments.slice(0, 3).map((comment, idx) => (
                         <li
                           key={idx}
                           className="list-group-item d-flex justify-content-between align-items-start"
                         >
                           <div className="ms-2 me-auto">
-                            <div className="fw-bold">Barack Obama</div>
-                            {comment}
+                            <div className="fw-bold">{comment.name}</div>
+                            {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            14/10/2021
+                            {timestampConverter(comment.date_added)}
                           </span>
                         </li>
                       ))}
                     </ul>
-                    <button
-                      className="comment-toggle btn btn-primary"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapseExample"
-                      aria-expanded="false"
-                      aria-controls="collapseExample"
-                      onClick={() => setExpanded(true)}
-                    >
-                      Show more
-                      {/* chevron icon for button */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-chevron-down"
-                        viewBox="0 0 16 16"
+                    {comments.length > 3 && (
+                      <button
+                        className="comment-toggle btn btn-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample"
+                        aria-expanded="false"
+                        aria-controls="collapseExample"
+                        onClick={() => setExpanded(true)}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                        />
-                      </svg>
-                    </button>
+                        Show more
+                        {/* chevron icon for button */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-chevron-down"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   </>
                 )}
                 {expanded && (
@@ -246,11 +292,11 @@ function Resource({ resource, currentUser }: ResourceProps) {
                           className="list-group-item d-flex justify-content-between align-items-start"
                         >
                           <div className="ms-2 me-auto">
-                            <div className="fw-bold">bob</div>
-                            {comment}
+                            <div className="fw-bold">{comment.name}</div>
+                            {comment.comment_text}
                           </div>
                           <span className="badge bg-primary rounded-pill">
-                            14/10/2021
+                            {timestampConverter(comment.date_added)}
                           </span>
                         </li>
                       ))}

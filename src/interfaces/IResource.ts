@@ -6,5 +6,8 @@ export interface IResource {
   recommended: string;
   url: string;
   date_added: number;
-  content_type: string;
+  likes: string;
+  name: string;
+  is_faculty: boolean;
+  type: string;
 }

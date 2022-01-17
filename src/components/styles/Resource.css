@@ -71,3 +71,20 @@
   display: flex;
   justify-content: space-between;
 }
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+}
+.card-title-details {
+  display: flex;
+  width: 30%;
+  justify-content: space-between;
+}
+
+.card-title-main {
+  display: flex;
+}
+.card-title-main h5 {
+  margin-right: 5px;
+}
