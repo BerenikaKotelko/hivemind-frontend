@@ -29,8 +29,10 @@ function ResourceContainer({
       resource.name,
       resource.recommended,
       resource.type,
+      resource.tags,
       recommendationValue,
-      contentType
+      contentType,
+      selectedTags
     )
   );
 

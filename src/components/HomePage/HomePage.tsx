@@ -67,6 +67,7 @@ function HomePage({ currentUser, resources }: HomePageProps) {
     },
     [baseUrl]
   );
+
   function handleRecommendationClick(checked: boolean, recValue: string) {
     const newRecommendations = Object.assign({}, recommendations);
     newRecommendations[recValue] = checked;
