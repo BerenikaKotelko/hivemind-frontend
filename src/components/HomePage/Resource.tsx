@@ -15,21 +15,11 @@ interface ResourceProps {
   getResources: (endpoint: string) => void;
 }
 
-/*
-if (likeStatus) {
-  // have like button coloured in, and have onclick be handleUnlike (for like)
-  // disable unlike button (via toast)
-} else {
-  // have dislike button coloured in, and have onclick be handleUnlike (for dislike)
-  // disable like button (via toast)
-}
-*/
-
 function Resource({ resource, currentUser, getResources }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
-  const [likeStatus, setLikeStatus] = useState<boolean | null>(null);
+  const [likeStatus, setLikeStatus] = useState<boolean | null>(null); // change naming convention to thumbs down rather than dislike
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
@@ -206,6 +196,8 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                         "You need to be authenticated to like a resource!"
                       );
                       handleThumbsUpClick();
+                      likeStatus === false &&
+                        showUnlikeError("Undislike before liking!");
                     }}
                   >
                     {resource.likes} 👍
@@ -223,6 +215,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                         "You need to be authenticated to dislike a resource!"
                       );
                       handleThumbsDownClick();
+                      likeStatus && showUnlikeError("Unlike before disliking!");
                     }}
                   >
                     {resource.dislikes} 👎
