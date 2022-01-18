@@ -15,6 +15,16 @@ interface ResourceProps {
   getResources: (endpoint: string) => void;
 }
 
+/*
+if (likeStatus) {
+  // have like button coloured in, and have onclick be handleUnlike (for like)
+  // disable unlike button (via toast)
+} else {
+  // have dislike button coloured in, and have onclick be handleUnlike (for dislike)
+  // disable like button (via toast)
+}
+*/
+
 function Resource({ resource, currentUser, getResources }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
@@ -25,6 +35,10 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
     currentUser ?? toast.error(str);
+  };
+
+  const showUnlikeError = (str: string) => {
+    toast.error(str);
   };
 
   const handleAddComment = async (commentText: string) => {
@@ -46,17 +60,34 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
       );
       console.log(res.data.data);
       getResources("resources");
+      getLikeStatus(`resources/${resource.id}/likes`);
     }
   };
 
-  const handleUnlike = async (liked: boolean) => {
-    console.log("I'm running!");
+  const handleUnlike = async () => {
     if (currentUser) {
       const res = await axios.delete(
         `${baseUrl}/resources/${resource.id}/likes/${currentUser.id}`
       );
       console.log(res.data.data);
       getResources("resources");
+      getLikeStatus(`resources/${resource.id}/likes`);
+    }
+  };
+
+  const handleThumbsUpClick = () => {
+    if (likeStatus) {
+      handleUnlike();
+    } else {
+      handleLike(true);
+    }
+  };
+
+  const handleThumbsDownClick = () => {
+    if (likeStatus === false) {
+      handleUnlike();
+    } else if (likeStatus === null) {
+      handleLike(false);
     }
   };
 
@@ -84,6 +115,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
     getLikeStatus(`resources/${resource.id}/likes`);
     return () => {
       setComments([]);
+      setLikeStatus(null);
     };
   }, [getComments, getLikeStatus, resource.id]);
 
@@ -93,7 +125,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
         <div className="card-body">
           <div className="card-title">
             <div className="card-title-main">
-              <h5>{resource.title} </h5>
+              <h5>{resource.title}</h5>
               <em>
                 <small className="text-muted">
                   submitted by: {resource.name}
@@ -165,12 +197,15 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                   <button
                     type="button"
                     className="header-button btn btn-outline-warning"
+                    style={{
+                      color: likeStatus ? "black" : "#f7b950",
+                      backgroundColor: likeStatus ? "#ffdd99" : "white",
+                    }}
                     onClick={() => {
                       showSignInError(
                         "You need to be authenticated to like a resource!"
                       );
-                      console.log("like");
-                      handleLike(true);
+                      handleThumbsUpClick();
                     }}
                   >
                     {resource.likes} 👍
@@ -178,12 +213,16 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                   <button
                     type="button"
                     className="header-button btn btn-outline-warning"
+                    style={{
+                      color: likeStatus === false ? "black" : "#f7b950",
+                      backgroundColor:
+                        likeStatus === false ? "#ffdd99" : "white",
+                    }}
                     onClick={() => {
                       showSignInError(
                         "You need to be authenticated to dislike a resource!"
                       );
-                      console.log("dislike");
-                      handleLike(false);
+                      handleThumbsDownClick();
                     }}
                   >
                     {resource.dislikes} 👎
