@@ -13,6 +13,7 @@ import axios from "axios";
 import { IUser } from "./interfaces/IUser";
 import { IResource } from "./interfaces/IResource";
 import { ITag } from "./interfaces/ITag";
+import StudyListPage from "./components/StudyListPage/StudyListPage";
 // import { setEmitFlags } from "typescript";
 
 function App() {
@@ -77,7 +78,10 @@ function App() {
           path="/"
           element={<HomePage resources={resources} currentUser={currentUser} />}
         />
-        <Route path="study-list" element={<>study list</>} />
+        <Route
+          path="study-list"
+          element={<StudyListPage currentUser={currentUser} />}
+        />
         <Route
           path="add-resource"
           element={

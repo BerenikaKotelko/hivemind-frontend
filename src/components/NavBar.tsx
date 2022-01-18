@@ -87,7 +87,11 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
           ) : (
             <>
               <div>
-                <small>Signed in as </small> <strong>{currentUser.name}</strong>{" "}
+                <small>Signed in as </small>{" "}
+                <strong>
+                  {currentUser.is_faculty ? "🤓" : "🎓"}
+                  {currentUser.name}
+                </strong>{" "}
               </div>
               <button
                 className="sign-out-btn btn btn-danger btn-sm"
