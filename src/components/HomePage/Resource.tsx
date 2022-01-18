@@ -12,12 +12,15 @@ import ReactTooltip from "react-tooltip";
 interface ResourceProps {
   resource: IResource;
   currentUser: IUser | undefined;
+  getResources: (endpoint: string) => void;
 }
 
-function Resource({ resource, currentUser }: ResourceProps) {
+function Resource({ resource, currentUser, getResources }: ResourceProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
+  const [likeStatus, setLikeStatus] = useState<boolean | null>(null);
+
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
     //double ?? means is undefined? then...
@@ -34,6 +37,29 @@ function Resource({ resource, currentUser }: ResourceProps) {
     getComments(`resources/${resource.id}/comments`);
     setCommentText("");
   };
+
+  const handleLike = async (liked: boolean) => {
+    if (currentUser) {
+      const res = await axios.post(
+        `${baseUrl}/resources/${resource.id}/likes/${currentUser.id}`,
+        { liked }
+      );
+      console.log(res.data.data);
+      getResources("resources");
+    }
+  };
+
+  const handleUnlike = async (liked: boolean) => {
+    console.log("I'm running!");
+    if (currentUser) {
+      const res = await axios.delete(
+        `${baseUrl}/resources/${resource.id}/likes/${currentUser.id}`
+      );
+      console.log(res.data.data);
+      getResources("resources");
+    }
+  };
+
   const getComments = useCallback(
     async (endpoint: string) => {
       const res = await axios.get(`${baseUrl}/${endpoint}`);
@@ -42,13 +68,24 @@ function Resource({ resource, currentUser }: ResourceProps) {
     [baseUrl]
   );
 
+  const getLikeStatus = useCallback(
+    async (endpoint: string) => {
+      if (currentUser) {
+        const res = await axios.get(`${baseUrl}/${endpoint}/${currentUser.id}`);
+        setLikeStatus(res.data.data);
+      }
+    },
+    [baseUrl, currentUser?.id]
+  );
+
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
     // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+    getLikeStatus(`resources/${resource.id}/likes`);
     return () => {
       setComments([]);
     };
-  }, [getComments, resource.id]);
+  }, [getComments, getLikeStatus, resource.id]);
 
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
@@ -132,6 +169,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to like a resource!"
                       );
+                      console.log("like");
+                      handleLike(true);
                     }}
                   >
                     {resource.likes} 👍
@@ -143,6 +182,8 @@ function Resource({ resource, currentUser }: ResourceProps) {
                       showSignInError(
                         "You need to be authenticated to dislike a resource!"
                       );
+                      console.log("dislike");
+                      handleLike(false);
                     }}
                   >
                     {resource.dislikes} 👎
