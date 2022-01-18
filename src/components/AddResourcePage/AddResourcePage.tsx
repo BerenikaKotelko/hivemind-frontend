@@ -238,258 +238,278 @@ function AddResourcePage({
   }
 
   return (
-    <div className="container">
-      <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
-        Add a resource
-      </h1>
-      <p style={{ color: "red", textAlign: "center" }}>All inputs required</p>
-      {/* setting title to be large */}
-      <div className="input_containers">
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text control-label">Title</span>
-          </div>
-          <input
-            type="text"
-            className="form-control"
-            aria-label="Input title"
-            data-testid="add-resource-input-title"
-            aria-required="true" //is this right?
-            value={newResource.title}
-            onChange={(e) =>
-              handleAddNewResource(
-                "title",
-                e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
-              )
-            }
-          />
-        </div>
-      </div>
-      <div className="input_containers">
-        <div className="input-group mb-3">
-          <span className="input-group-text">Description</span>
-          <textarea
-            className="form-control"
-            aria-label="Input description"
-            data-testid="add-resource-input-description"
-            value={newResource.description}
-            onChange={(e) =>
-              handleAddNewResource(
-                "description",
-                e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
-              )
-            }
-          ></textarea>
-        </div>
-      </div>
-      <div className="input_containers">
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">
-              URL
-            </span>
-          </div>
-          <input
-            type="text"
-            className="form-control"
-            aria-label="Input URL"
-            data-testid="add-resource-input-url"
-            value={newResource.url}
-            onChange={(e) => handleAddNewResource("url", e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="input_containers">
-        <div className="input-group input-group-m mb-3">
-          <label className="input-group-text" htmlFor="inputGroupSelect01">
-            Resource Type
-          </label>
-          <select
-            className="form-select"
-            id="inputGroupSelect01"
-            defaultValue="0"
-            data-testid="add-resource-type"
-            onChange={(e) => handleAddNewResource("type", e.target.value)}
-          >
-            <option>Choose a resource type...</option>
-            {contentType.map((type) => {
-              return <option key={type}>{type}</option>;
-            })}
-          </select>
-        </div>
-      </div>
-      <div className="input_containers">
-        <div className="input-group input-group-m mb-3">
-          <label className="input-group-text" htmlFor="inputGroupSelect01">
-            Recommendability
-          </label>
-          <select
-            className="form-select"
-            id="inputGroupSelect01"
-            defaultValue="0"
-            data-testid="add-resource-recommendability"
-            onChange={(e) =>
-              handleAddNewResource("recommended", e.target.value)
-            }
-          >
-            <option>Choose a recommendability...</option>
-            <option>Un-bee-table</option>
-            <option>May-bee</option>
-            <option>Buzzkill</option>
-          </select>
-        </div>
-      </div>
-      <div className="input_containers">
-        <div className="input-group input-group-m mb-3">
-          <label className="input-group-text" htmlFor="inputGroupSelect01">
-            Recommended week to study
-          </label>
-          <select
-            className="form-select"
-            id="inputGroupSelect01"
-            defaultValue="0"
-            data-testid="add-resource-week"
-            onChange={(e) => handleAddNewResource("week", e.target.value)}
-          >
-            {weekToStudy.map((week) => (
-              <option key={week}>{week}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="input_containers">
-        <div className="filterTags" data-testid="add-resource-tags">
-          {unselectedTags.map((tag) => (
-            <span
-              data-testid={`add-resource-tag-${tag.tag_id}`}
-              key={tag.tag_id}
-              style={{ backgroundColor: tag.tag_colour }}
-              className="tag-badge badge rounded-pill"
-              onClick={() => handleTagClick(tag)}
-            >
-              {tag.tag_name}
-            </span>
-          ))}
-          <button
-            onClick={openModal}
-            className="tag-badge badge rounded-pill bg-success"
-          >
-            +
-          </button>
-        </div>
-        <hr className="dropdown-divider" />
-        <div className="selectedTags" data-testid="add-resource-selected-tags">
-          <p>Selected tags: </p>
-          {selectedTags.map((tag) => (
-            <span
-              key={tag.tag_id}
-              style={{ backgroundColor: tag.tag_colour }}
-              className="tag-badge badge rounded-pill"
-              onClick={() => handleRemoveTagClick(tag)}
-            >
-              {tag.tag_name}
-            </span>
-          ))}
-        </div>
-        <>
-          <Modal show={modalState}>
-            <Modal.Header closeButton onClick={onClosingModal}></Modal.Header>
-            <Modal.Body>
-              <div className="input-group mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Input tag"
-                  aria-label="Input new tag"
-                  value={newTag}
-                  onChange={(e) => handleNewTag(e.target.value)}
-                />
+    <>
+      {currentUser ? (
+        <div className="container">
+          <h1 data-testid="add-resource-header" style={{ textAlign: "center" }}>
+            Add a resource
+          </h1>
+          <p style={{ color: "red", textAlign: "center" }}>
+            All inputs required
+          </p>
+          {/* setting title to be large */}
+          <div className="input_containers">
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text control-label">Title</span>
               </div>
-              {/* <input
-                placeholder="Input tag"
+              <input
                 type="text"
-                aria-label="Add a new tag"
-                value={newTag}
-                onChange={(e) => handleNewTag(e.target.value)}></input> */}
-              <div className="input-group input-group-m mb-3">
-                <label
-                  className="input-group-text"
-                  htmlFor="inputGroupSelect01"
-                >
-                  Tag colour
-                </label>
-                <select
-                  className="form-select"
-                  id="inputGroupSelect01"
-                  defaultValue="0"
-                  data-testid="add-resource-recommendability"
-                  onChange={(e) => handleNewTagColour(e.target.value)}
-                >
-                  <option>Colour your new tag...</option>
-                  {/* how to change styling of options? */}
-                  {colourCodes.map((colourCode) => (
-                    <option
-                      key={colourCode.colour_name}
-                      style={{ backgroundColor: colourCode.HEX }}
-                    >
-                      {colourCode.colour_name}
-                    </option>
-                  ))}
-                </select>
+                className="form-control"
+                aria-label="Input title"
+                data-testid="add-resource-input-title"
+                aria-required="true" //is this right?
+                value={newResource.title}
+                onChange={(e) =>
+                  handleAddNewResource(
+                    "title",
+                    e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
+                  )
+                }
+              />
+            </div>
+          </div>
+          <div className="input_containers">
+            <div className="input-group mb-3">
+              <span className="input-group-text">Description</span>
+              <textarea
+                className="form-control"
+                aria-label="Input description"
+                data-testid="add-resource-input-description"
+                value={newResource.description}
+                onChange={(e) =>
+                  handleAddNewResource(
+                    "description",
+                    e.target.value.replace(/^\w/gm, (c) => c.toUpperCase())
+                  )
+                }
+              ></textarea>
+            </div>
+          </div>
+          <div className="input_containers">
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text" id="basic-addon1">
+                  URL
+                </span>
               </div>
-              <div className="nav justify-content-center">
-                <button
-                  className="btn btn-primary"
-                  onClick={
-                    newTagColour !== "Colour your new tag..."
-                      ? () => handleNewTags(newTag, newTagColour)
-                      : () => console.log("Add a colour to your tag, fool!")
-                  }
-                >
-                  Add new tag
-                </button>
-              </div>
-              {newTags.map((tag) => (
+              <input
+                type="text"
+                className="form-control"
+                aria-label="Input URL"
+                data-testid="add-resource-input-url"
+                value={newResource.url}
+                onChange={(e) => handleAddNewResource("url", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="input_containers">
+            <div className="input-group input-group-m mb-3">
+              <label className="input-group-text" htmlFor="inputGroupSelect01">
+                Resource Type
+              </label>
+              <select
+                className="form-select"
+                id="inputGroupSelect01"
+                defaultValue="0"
+                data-testid="add-resource-type"
+                onChange={(e) => handleAddNewResource("type", e.target.value)}
+              >
+                <option>Choose a resource type...</option>
+                {contentType.map((type) => {
+                  return <option key={type}>{type}</option>;
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="input_containers">
+            <div className="input-group input-group-m mb-3">
+              <label className="input-group-text" htmlFor="inputGroupSelect01">
+                Recommendability
+              </label>
+              <select
+                className="form-select"
+                id="inputGroupSelect01"
+                defaultValue="0"
+                data-testid="add-resource-recommendability"
+                onChange={(e) =>
+                  handleAddNewResource("recommended", e.target.value)
+                }
+              >
+                <option>Choose a recommendability...</option>
+                <option>Un-bee-table</option>
+                <option>May-bee</option>
+                <option>Buzzkill</option>
+              </select>
+            </div>
+          </div>
+          <div className="input_containers">
+            <div className="input-group input-group-m mb-3">
+              <label className="input-group-text" htmlFor="inputGroupSelect01">
+                Recommended week to study
+              </label>
+              <select
+                className="form-select"
+                id="inputGroupSelect01"
+                defaultValue="0"
+                data-testid="add-resource-week"
+                onChange={(e) => handleAddNewResource("week", e.target.value)}
+              >
+                {weekToStudy.map((week) => (
+                  <option key={week}>{week}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="input_containers">
+            <div className="filterTags" data-testid="add-resource-tags">
+              {unselectedTags.map((tag) => (
                 <span
-                  key={tag.tag_name}
-                  //update className
-                  className="tag-badge badge rounded-pill"
+                  data-testid={`add-resource-tag-${tag.tag_id}`}
+                  key={tag.tag_id}
                   style={{ backgroundColor: tag.tag_colour }}
+                  className="tag-badge badge rounded-pill"
+                  onClick={() => handleTagClick(tag)}
                 >
                   {tag.tag_name}
                 </span>
               ))}
-            </Modal.Body>
-            <Modal.Footer className="nav justify-content-center">
-              <Button
-                className="btn btn-lg"
-                onClick={() => handleUpdateTagBank(newTags, unselectedTags)}
+              <button
+                onClick={openModal}
+                className="tag-badge badge rounded-pill bg-success"
               >
-                Submit all tags
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      </div>
+                +
+              </button>
+            </div>
+            <hr className="dropdown-divider" />
+            <div
+              className="selectedTags"
+              data-testid="add-resource-selected-tags"
+            >
+              <p>Selected tags: </p>
+              {selectedTags.map((tag) => (
+                <span
+                  key={tag.tag_id}
+                  style={{ backgroundColor: tag.tag_colour }}
+                  className="tag-badge badge rounded-pill"
+                  onClick={() => handleRemoveTagClick(tag)}
+                >
+                  {tag.tag_name}
+                </span>
+              ))}
+            </div>
+            <>
+              <Modal show={modalState}>
+                <Modal.Header
+                  closeButton
+                  onClick={onClosingModal}
+                ></Modal.Header>
+                <Modal.Body>
+                  <div className="input-group mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Input tag"
+                      aria-label="Input new tag"
+                      value={newTag}
+                      onChange={(e) => handleNewTag(e.target.value)}
+                    />
+                  </div>
+                  {/* <input
+           placeholder="Input tag"
+           type="text"
+           aria-label="Add a new tag"
+           value={newTag}
+           onChange={(e) => handleNewTag(e.target.value)}></input> */}
+                  <div className="input-group input-group-m mb-3">
+                    <label
+                      className="input-group-text"
+                      htmlFor="inputGroupSelect01"
+                    >
+                      Tag colour
+                    </label>
+                    <select
+                      className="form-select"
+                      id="inputGroupSelect01"
+                      defaultValue="0"
+                      data-testid="add-resource-recommendability"
+                      onChange={(e) => handleNewTagColour(e.target.value)}
+                    >
+                      <option>Colour your new tag...</option>
+                      {/* how to change styling of options? */}
+                      {colourCodes.map((colourCode) => (
+                        <option
+                          key={colourCode.colour_name}
+                          style={{ backgroundColor: colourCode.HEX }}
+                        >
+                          {colourCode.colour_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="nav justify-content-center">
+                    <button
+                      className="btn btn-primary"
+                      onClick={
+                        newTagColour !== "Colour your new tag..."
+                          ? () => handleNewTags(newTag, newTagColour)
+                          : () => console.log("Add a colour to your tag, fool!")
+                      }
+                    >
+                      Add new tag
+                    </button>
+                  </div>
+                  {newTags.map((tag) => (
+                    <span
+                      key={tag.tag_name}
+                      //update className
+                      className="tag-badge badge rounded-pill"
+                      style={{ backgroundColor: tag.tag_colour }}
+                    >
+                      {tag.tag_name}
+                    </span>
+                  ))}
+                </Modal.Body>
+                <Modal.Footer className="nav justify-content-center">
+                  <Button
+                    className="btn btn-lg"
+                    onClick={() => handleUpdateTagBank(newTags, unselectedTags)}
+                  >
+                    Submit all tags
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </>
+          </div>
 
-      <div className="nav justify-content-center pt-5">
-        <button
-          type="button"
-          className="btn btn-outline-success btn-lg"
-          onClick={
-            ifEmptyInputs
-              ? () => showToastError("Please add inputs for every field")
-              : () => {
-                  handlePostNewResource(newResource);
-                  // handlePostResourcesTags(selectedTags, latestResourceId);
-                }
-          }
-        >
-          Submit new resource
-        </button>
-      </div>
-    </div>
+          <div className="nav justify-content-center pt-5">
+            <button
+              type="button"
+              className="btn btn-outline-success btn-lg"
+              onClick={
+                ifEmptyInputs
+                  ? () => showToastError("Please add inputs for every field")
+                  : () => {
+                      handlePostNewResource(newResource);
+                      // handlePostResourcesTags(selectedTags, latestResourceId);
+                    }
+              }
+            >
+              Submit new resource
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="container require-sign-in">
+          <img
+            src="https://i.pinimg.com/originals/c1/dc/25/c1dc25c150904864cc24c48e15e63b0d.gif"
+            alt="Animated bee gif"
+          ></img>
+          <h3>Please sign in to view this page!</h3>
+        </div>
+      )}
+    </>
   );
 }
 

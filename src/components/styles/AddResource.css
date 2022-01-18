@@ -13,3 +13,16 @@
   content: "*";
   color: red;
 }
+
+.require-sign-in {
+  text-align: center;
+  position: relative;
+  width: max-content;
+}
+
+.require-sign-in h3 {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+  width: 100%;
+}
