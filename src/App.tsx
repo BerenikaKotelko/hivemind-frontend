@@ -80,7 +80,7 @@ function App() {
         />
         <Route
           path="study-list"
-          element={<StudyListPage currentUser={currentUser} />}
+          element={<StudyListPage currentUser={currentUser} resources={resources} />}
         />
         <Route
           path="add-resource"
