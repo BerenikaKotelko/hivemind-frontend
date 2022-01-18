@@ -1,6 +1,7 @@
 import { IUser } from "../../interfaces/IUser";
 import "../../components/styles/StudyList.css";
-import { IResource } from "../../interfaces/IResource";
+// import { IResource } from "../../interfaces/IResource";
+import { IStudyListResource } from "../../interfaces/IResource";
 import { useCallback, useEffect, useState } from "react";
 import timestampConverterToGB from "../../utils/timestampConverter"
 import ReactTooltip from "react-tooltip";
@@ -10,52 +11,156 @@ import timestampConverter from "../../utils/timestampConverter";
 
 interface StudyListPageProps {
   currentUser: IUser | undefined;
-  resources: IResource[];
 }
 
-function StudyListPage({ currentUser, resources }: StudyListPageProps) {
-  const [selectedResource, setSelectedResource] = useState<IResource>(resources[0])
+const DummyResourceData = [{ "id": 1, "author_id": 1, "title": "CSS tricks", "description": "A great website for styling up your apps.", "type": "Article", "recommended": "Un-bee-table", "url": "https://css-tricks.com/", "week": "Week 1 Git", "date_added": 1642437294, "name": "Berenika", "is_faculty": false, "likes": 2, "dislikes": 1, "studied": false, "tags": [{ "tag_id": 1, "tag_name": "Hooks", "tag_colour": "#4b6cdb" }, { "tag_id": 2, "tag_name": "React", "tag_colour": "#15aca6" }, { "tag_id": 3, "tag_name": "Testing", "tag_colour": "#7d9681" }] }, { "id": 2, "author_id": 1, "title": "My first resource", "description": "Updating the description", "type": "Article", "recommended": "Un-bee-liveable", "url": "www.google.com", "week": "Week 1 Git", "date_added": 1642437294, "name": "Berenika", "is_faculty": false, "likes": 0, "dislikes": 0, "studied": false, "tags": [{ "tag_id": 4, "tag_name": "SQL", "tag_colour": "#ad0052" }, { "tag_id": 5, "tag_name": "FrontEnd", "tag_colour": "#786b6f" }, { "tag_id": 6, "tag_name": "BackEnd", "tag_colour": "#7fde25" }] }, { "id": 3, "author_id": 4, "title": "Battle practice", "description": "A truly magnificent website for practicing your code warfare skills. Find your own Austerlitz on codewars!", "type": "Article", "recommended": "Un-bee-table", "url": "https://www.codewars.com", "week": "Week 1 Git", "date_added": 1642437294, "name": "Hanna", "is_faculty": false, "likes": 0, "dislikes": 0, "studied": false, "tags": [] }, { "id": 4, "author_id": 1, "title": "Beri rules", "description": "LOL", "type": "Article", "recommended": "May-bee", "url": "www.youtube.com", "week": "Week 1 Git", "date_added": 1642437294, "name": "Berenika", "is_faculty": false, "likes": 1, "dislikes": 0, "studied": true, "tags": [] }, { "id": 5, "author_id": 2, "title": "Computer programming", "description": "Computer programming is the process of designing and building an executable computer program to accomplish a specific computing result or to perform a particular task. Programming involves tasks such as analysis, generating algorithms, profiling algorithms accuracy and resource consumption, and the implementation of algorithms in a chosen programming language (commonly referred to as coding)", "type": "Article", "recommended": "Un-bee-lieveable", "url": "www.google.com", "week": "Week 1 Git", "date_added": 1642437294, "name": "Christopher", "is_faculty": false, "likes": 3, "dislikes": 1, "studied": true, "tags": [] }]
+
+function StudyListPage({ currentUser }: StudyListPageProps) {
+  const [studyListResources, setStudyListResources] = useState<IStudyListResource[]>(DummyResourceData)
+  const [selectedResource, setSelectedResource] = useState<IStudyListResource>(studyListResources[0])
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
-  const handleAddComment = async (commentText: string) => {
-    if (currentUser) {
-      await axios.post(`${baseUrl}/resources/${selectedResource.id}/comments`, {
-        author_id: currentUser.id,
-        comment_text: commentText,
-      });
-    }
-    getComments(`resources/${selectedResource.id}/comments`);
-    setCommentText("");
-  };
-  const getComments = useCallback(
+  const getStudyList = useCallback(
     async (endpoint: string) => {
-      const res = await axios.get(`${baseUrl}/${endpoint}`);
-      setComments(res.data.data);
+      if (currentUser) {
+        const res = await axios.get(`${baseUrl}/${endpoint}/${currentUser.id}`);
+        setStudyListResources(res.data.data);
+      }
     },
-    [baseUrl]
+    [baseUrl, currentUser]
   );
 
   useEffect(() => {
-    getComments(`resources/${selectedResource.id}/comments`);
-    // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
-    return () => {
-      setComments([]);
-    };
-  }, [getComments, selectedResource.id]);
+    getStudyList("study_list");
+  }, [getStudyList]);
+
+  function handleClickOnResource(resource: IStudyListResource) {
+    setSelectedResource(resource)
+  }
+
+  // const handleAddComment = async (commentText: string) => {
+  //   if (selectedResource && currentUser) {
+  //     await axios.post(`${baseUrl}/resources/${selectedResource.id}/comments`, {
+  //       author_id: currentUser.id,
+  //       comment_text: commentText,
+  //     });
+  //   getComments(`resources/${selectedResource.id}/comments`);
+  //   setCommentText("");
+  //   }
+  // };
+
+  // const getComments = useCallback(
+  //   async (endpoint: string) => {
+  //     const res = await axios.get(`${baseUrl}/${endpoint}`);
+  //     setComments(res.data.data);
+  //   },
+  //   [baseUrl]
+  // );
+
+  // useEffect(() => {
+  //   if (selectedResource && currentUser){
+  //   getComments(`resources/${selectedResource.id}/comments`);
+  //   // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+  //   return () => {
+  //     setComments([]);
+  //   };
+  // }}, [getComments, selectedResource.id]);
 
   return (
     <>
-      {!currentUser ? (
+      {selectedResource && !currentUser ? (
         <>
           <div className="container title">
             <h1>My Study List</h1>
           </div>
           <div className="parent-container">
             <div className="study-list-container">
+              <div className="to-study-container">
+                <h4>Resources to study</h4>
+                <ol className="list-group list-group-item-action overflow-auto">
+                  {studyListResources.filter(studyListResource => studyListResource.studied === false).map(studyListResource => {
+                    return (
+
+                      <li
+                        key={studyListResource.id}
+                        className={
+                          "list-group-item d-flex justify-content-between align-items-start "
+                          + (selectedResource &&
+                            selectedResource.id === studyListResource.id
+                            ? "active"
+                            : "")
+                        }
+                        onClick={() => handleClickOnResource(studyListResource)}
+                      >
+                        <div className="ms-2 me-auto snippet-list">
+                          <div className="fw-bold ">{studyListResource.title}</div>
+                          <p
+                            className={
+                              "monospace-text snippet-fragment "
+                              + (selectedResource &&
+                                selectedResource.id === studyListResource.id
+                                ? "active"
+                                : "")
+                            }
+                          >
+                            {studyListResource.description}
+                          </p>
+                        </div>
+                        <small>
+                          <em>{studyListResource.type}</em>
+                        </small>
+                      </li>
+                    )
+                  })}
+                </ol>
+
+
+              </div>
+              <div className="resources-studied-container">
+                <h4>Resources already studied</h4>
+                <ol className="list-group list-group-item-action overflow-auto">
+                  {studyListResources.filter(studyListResource => studyListResource.studied).map(studyListResource => {
+                    return (
+
+                      <li
+                        key={studyListResource.id}
+                        className={
+                          "list-group-item d-flex justify-content-between align-items-start "
+                          + (selectedResource &&
+                            selectedResource.id === studyListResource.id
+                            ? "active"
+                            : "")
+                        }
+                        onClick={() => handleClickOnResource(studyListResource)}
+                      >
+                        <div className="ms-2 me-auto snippet-list">
+                          <div className="fw-bold ">{studyListResource.title}</div>
+                          <p
+                            // className={
+                            //   "monospace-text snippet-fragment "
+                            //   + (selectedResource &&
+                            //     selectedResource.id === studyListResource.id
+                            //     ? "active"
+                            //     : "")
+                            // }
+                            className="description"
+                          >
+                            {studyListResource.description}
+                          </p>
+                        </div>
+                        <small>
+                          <em>{studyListResource.type}</em>
+                        </small>
+                      </li>
+                    )
+                  })}
+                </ol>
+              </div>
+
             </div>
             <div className="resource-view-container">
               <div>
@@ -74,7 +179,6 @@ function StudyListPage({ currentUser, resources }: StudyListPageProps) {
                       <button
                         type="button"
                         className="header-button btn btn-outline-warning"
-
                       >
                         {selectedResource.likes} 👍
                       </button>
@@ -146,9 +250,9 @@ function StudyListPage({ currentUser, resources }: StudyListPageProps) {
                         className="btn btn-outline-secondary"
                         type="button"
                         id="button-addon2"
-                        onClick={() => {
-                          handleAddComment(commentText);
-                        }}
+                      /*onClick={() => {
+                        handleAddComment(commentText);
+                      }}*/
                       >
                         Send
                       </button>
@@ -258,7 +362,8 @@ function StudyListPage({ currentUser, resources }: StudyListPageProps) {
           ></img>
           <h3>Please sign in to view this page!</h3>
         </div>
-      )}
+      )
+      }
     </>
   );
 }
