@@ -14,11 +14,11 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg navbar-light bg-warning">
         <div className="container-fluid">
-          <div className="hivemind-title">
+          <div className="hivemind-title" data-cy="page-title">
             <h1>🐝 Hivemind</h1>
           </div>
           <div className="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul className="navbar-nav">
+            <ul className="navbar-nav" data-cy="nav-buttons">
               <li className="nav-item">
                 <Link
                   to="/"
@@ -26,6 +26,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                     "link nav-link " +
                     `${location.pathname === "/" ? "active" : ""}`
                   }
+                  data-cy="home-page-click"
                 >
                   Home
                 </Link>
@@ -37,6 +38,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                     "link nav-link " +
                     `${location.pathname === "/study-list" ? "active" : ""}`
                   }
+                  data-cy="study-list-page-click"
                 >
                   Study List
                 </Link>
@@ -48,6 +50,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                     "link nav-link " +
                     `${location.pathname === "/add-resource" ? "active" : ""}`
                   }
+                  data-cy="add-resource-page-click"
                 >
                   Add Resource
                 </Link>
@@ -62,18 +65,21 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                data-cy="sign-in"
               >
                 Sign in
               </button>
               <ul
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton1"
+                data-cy="list-of-users"
               >
                 {users.map((user) => (
                   <li key={user.id}>
                     <button
                       type="button"
                       className="dropdown-item"
+                      data-cy={`user-${user.id}`}
                       onClick={() => {
                         setCurrentUser(user);
                       }}
@@ -86,7 +92,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
             </div>
           ) : (
             <>
-              <div>
+              <div data-cy="user-signed-in">
                 <small>Signed in as </small>{" "}
                 <strong>
                   {currentUser.is_faculty ? "🤓" : "🎓"}
@@ -96,6 +102,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
               <button
                 className="sign-out-btn btn btn-danger btn-sm"
                 onClick={() => setCurrentUser(undefined)}
+                data-cy="sign-out"
               >
                 Sign out
               </button>
