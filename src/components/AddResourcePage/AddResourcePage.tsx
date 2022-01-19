@@ -276,6 +276,7 @@ function AddResourcePage({
                 className="form-control"
                 aria-label="Input description"
                 data-testid="add-resource-input-description"
+                aria-required="true"
                 value={newResource.description}
                 onChange={(e) =>
                   handleAddNewResource(
@@ -298,6 +299,7 @@ function AddResourcePage({
                 className="form-control"
                 aria-label="Input URL"
                 data-testid="add-resource-input-url"
+                aria-required="true"
                 value={newResource.url}
                 onChange={(e) => handleAddNewResource("url", e.target.value)}
               />
@@ -311,6 +313,7 @@ function AddResourcePage({
               <select
                 className="form-select"
                 id="inputGroupSelect01"
+                aria-required="true"
                 defaultValue="0"
                 data-testid="add-resource-type"
                 onChange={(e) => handleAddNewResource("type", e.target.value)}
@@ -331,6 +334,7 @@ function AddResourcePage({
                 className="form-select"
                 id="inputGroupSelect01"
                 defaultValue="0"
+                aria-required="true"
                 data-testid="add-resource-recommendability"
                 onChange={(e) =>
                   handleAddNewResource("recommended", e.target.value)
@@ -351,6 +355,7 @@ function AddResourcePage({
               <select
                 className="form-select"
                 id="inputGroupSelect01"
+                aria-required="true"
                 defaultValue="0"
                 data-testid="add-resource-week"
                 onChange={(e) => handleAddNewResource("week", e.target.value)}
@@ -368,6 +373,7 @@ function AddResourcePage({
                 <span
                   data-testid={`add-resource-tag-${tag.tag_id}`}
                   key={tag.tag_id}
+                  aria-required="true"
                   style={{ backgroundColor: tag.tag_colour }}
                   className="tag-badge badge rounded-pill"
                   onClick={() => handleTagClick(tag)}
@@ -409,6 +415,7 @@ function AddResourcePage({
                   <div className="input-group mb-3">
                     <input
                       type="text"
+                      aria-required="true"
                       className="form-control"
                       placeholder="Input tag"
                       aria-label="Input new tag"
@@ -433,6 +440,7 @@ function AddResourcePage({
                       className="form-select"
                       id="inputGroupSelect01"
                       defaultValue="0"
+                      aria-required="true"
                       data-testid="add-resource-recommendability"
                       onChange={(e) => handleNewTagColour(e.target.value)}
                     >
@@ -491,9 +499,9 @@ function AddResourcePage({
                 ifEmptyInputs
                   ? () => showToastError("Please add inputs for every field")
                   : () => {
-                      handlePostNewResource(newResource);
-                      // handlePostResourcesTags(selectedTags, latestResourceId);
-                    }
+                    handlePostNewResource(newResource);
+                    // handlePostResourcesTags(selectedTags, latestResourceId);
+                  }
               }
             >
               Submit new resource
