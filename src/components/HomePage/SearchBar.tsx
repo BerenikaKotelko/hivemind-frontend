@@ -75,12 +75,15 @@ export default function SearchBar({
           data-bs-keyboard="false"
           aria-labelledby="filterModalLabel"
           aria-hidden="true"
-          
         >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="staticBackdropLabel" data-cy="filter-modal-title">
+                <h5
+                  className="modal-title"
+                  id="staticBackdropLabel"
+                  data-cy="filter-modal-title"
+                >
                   Set Filters
                 </h5>
                 {/* <button
@@ -125,8 +128,10 @@ export default function SearchBar({
                   )}
                 </div>
                 <h6>Recommendation Value</h6>
-                <div className="filterRecommendations"
-                data-cy="recommendation-value-list-filter">
+                <div
+                  className="filterRecommendations"
+                  data-cy="recommendation-value-list-filter"
+                >
                   {Object.entries(recommendationValue).map(
                     ([recKey, recValue], index) => {
                       return (
@@ -159,8 +164,10 @@ export default function SearchBar({
                   )}
                 </div>
                 <hr className="dropdown-divider" />
-                <div className="filterTags"
-                data-cy="unselected-tags-list-filter">
+                <div
+                  className="filterTags"
+                  data-cy="unselected-tags-list-filter"
+                >
                   {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
