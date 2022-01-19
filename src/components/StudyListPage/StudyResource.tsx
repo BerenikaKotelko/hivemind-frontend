@@ -54,7 +54,7 @@ export default function StudyListResource({
         selectedResource["studied"] = !selectedResource.studied;
       }
     },
-    [baseUrl]
+    [baseUrl, currentUser, getStudyList]
   );
 
   useEffect(() => {

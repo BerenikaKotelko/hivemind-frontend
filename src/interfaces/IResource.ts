@@ -20,4 +20,3 @@ export interface IResource {
 export interface IStudyListResource extends IResource {
   studied: boolean;
 }
-
