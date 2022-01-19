@@ -16,3 +16,7 @@ export interface IResource {
   dislikes: number;
   tags: ITag[];
 }
+
+export interface IStudyListResource extends IResource {
+  studied: boolean;
+}
