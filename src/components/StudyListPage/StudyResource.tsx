@@ -42,7 +42,7 @@ export default function StudyListResource({
 
   const handleLike = async (liked: boolean) => {
     if (currentUser) {
-      const res = await axios.post(
+      await axios.post(
         `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`,
         { liked }
       );
@@ -53,7 +53,7 @@ export default function StudyListResource({
 
   const handleUnlike = async () => {
     if (currentUser) {
-      const res = await axios.delete(
+      await axios.delete(
         `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`
       );
       getStudyList("study_list");
