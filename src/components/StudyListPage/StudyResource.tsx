@@ -65,21 +65,21 @@ export default function StudyListResource({
 
   const handleThumbsUpClick = () => {
     if (likeStatus) {
-      handleUnlike()
+      handleUnlike();
       selectedResource.likes = selectedResource.likes - 1;
     } else {
-      handleLike(true)
+      handleLike(true);
       selectedResource.likes = selectedResource.likes + 1;
     }
   };
 
   const handleThumbsDownClick = () => {
     if (likeStatus === false) {
-      handleUnlike()
+      handleUnlike();
       selectedResource.dislikes = selectedResource.dislikes - 1;
     } else if (likeStatus === null) {
-      handleLike(false)
-      // selectedResource.dislikes = selectedResource.dislikes + 1;
+      handleLike(false);
+      selectedResource.dislikes = selectedResource.dislikes + 1;
     }
   };
 
@@ -92,7 +92,6 @@ export default function StudyListResource({
     },
     [baseUrl, currentUser]
   );
-
 
   const getComments = useCallback(
     async (endpoint: string) => {
@@ -120,7 +119,7 @@ export default function StudyListResource({
   useEffect(() => {
     getComments(`resources/${selectedResource.id}/comments`);
     setExpanded(false);
-    getLikeStatus(`resources/${selectedResource.id}/likes`)
+    getLikeStatus(`resources/${selectedResource.id}/likes`);
     // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
     return () => {
       setComments([]);
@@ -168,8 +167,7 @@ export default function StudyListResource({
               className="header-button btn btn-outline-warning"
               style={{
                 color: likeStatus === false ? "black" : "#f7b950",
-                backgroundColor:
-                  likeStatus === false ? "#ffdd99" : "white",
+                backgroundColor: likeStatus === false ? "#ffdd99" : "white",
               }}
               onClick={() => {
                 handleThumbsDownClick();
