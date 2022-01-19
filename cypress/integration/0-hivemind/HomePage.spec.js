@@ -1,6 +1,3 @@
-
-
-//is the title of the page 'Hivemind'?
 describe("Navbar content is correct", () => {
     beforeEach(() => {
       cy.visit("/");
@@ -51,6 +48,7 @@ describe("Navbar content is correct", () => {
         cy.url()
         .should("include", "/study-list")
     })
+
     //The 'home' tab contains the correct text and can be visited upon clikcing
     it("displays Home page and visits it upon clicking", () => {
         cy.get("[data-cy=home-page-click]")
@@ -62,3 +60,46 @@ describe("Navbar content is correct", () => {
 
    
   });
+
+  //Testing the home page central content (search bar and downwards from there)
+  describe("Home page content is correct", () => {
+    beforeEach(() => {
+      cy.visit("/");
+    })
+    // Is there a search bar that says 'Search'?
+    it("Search bar says 'search'", () => {
+        cy.get("[data-cy=search-bar]")
+        .invoke('attr', 'placeholder')
+        .should("contain", "Search");
+      });
+
+    //Filter Tests
+    it("Filter button says 'filter' and can be clicked to reveal modal", () => {
+         //is there a filter button that says 'Filter'
+        cy.get("[data-cy=filter]")
+        .should("have.text", "Filter")
+        //can it be clicked to reveal a modal with th title 'Set Filters'
+        .click()
+        cy.get("[data-cy=filter-modal-title]")
+        .should("have.text", "Set Filters")
+        //are there 14 content types, is the second one Cheat-Sheet
+        cy.get("[data-cy=content-type-filter-list]")
+        .find("label")
+        .should("have.length", 14)
+        .eq(1)
+        .should("have.text", "Cheat-Sheet")
+        //are there 3 recommendation values, is the first one "Un-bee-table"
+        cy.get("[data-cy=recommendation-value-list-filter]")
+        .find("label")
+        .should("have.length", 3)
+        .first()
+        .should("have.text", "Un-bee-table")
+        //are there at last 11 Tags, and is the 4th one 'SQL'
+        cy.get("[data-cy=unselected-tags-list-filter]")
+        .find("span")
+        .should("have.length.greaterThan", 10)
+        .eq(3)
+        .should("have.text", "SQL")
+      });
+    
+})

@@ -57,12 +57,14 @@ export default function SearchBar({
           aria-label="Search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          data-cy="search-bar"
         />
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
           data-bs-toggle="modal"
           data-bs-target="#filterModal"
+          data-cy="filter"
         >
           Filter
         </button>
@@ -73,11 +75,12 @@ export default function SearchBar({
           data-bs-keyboard="false"
           aria-labelledby="filterModalLabel"
           aria-hidden="true"
+          
         >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="staticBackdropLabel">
+                <h5 className="modal-title" id="staticBackdropLabel" data-cy="filter-modal-title">
                   Set Filters
                 </h5>
                 {/* <button
@@ -89,7 +92,7 @@ export default function SearchBar({
               </div>
               <div className="modal-body">
                 <h6>Resource Type</h6>
-                <div className="filterType">
+                <div className="filterType" data-cy="content-type-filter-list">
                   {Object.entries(contentType).map(
                     ([contentKey, contentValue], index) => {
                       return (
@@ -122,7 +125,8 @@ export default function SearchBar({
                   )}
                 </div>
                 <h6>Recommendation Value</h6>
-                <div className="filterRecommendations">
+                <div className="filterRecommendations"
+                data-cy="recommendation-value-list-filter">
                   {Object.entries(recommendationValue).map(
                     ([recKey, recValue], index) => {
                       return (
@@ -155,7 +159,8 @@ export default function SearchBar({
                   )}
                 </div>
                 <hr className="dropdown-divider" />
-                <div className="filterTags">
+                <div className="filterTags"
+                data-cy="unselected-tags-list-filter">
                   {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
