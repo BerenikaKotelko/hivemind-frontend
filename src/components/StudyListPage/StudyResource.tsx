@@ -46,7 +46,6 @@ export default function StudyListResource({
         `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`,
         { liked }
       );
-      console.log(res.data.data);
       getStudyList("study_list");
       getLikeStatus(`resources/${selectedResource.id}/likes`);
     }
@@ -57,7 +56,6 @@ export default function StudyListResource({
       const res = await axios.delete(
         `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`
       );
-      console.log(res.data.data);
       getStudyList("study_list");
       getLikeStatus(`resources/${selectedResource.id}/likes`);
     }
@@ -66,20 +64,20 @@ export default function StudyListResource({
   const handleThumbsUpClick = () => {
     if (likeStatus) {
       handleUnlike();
-      selectedResource.likes = selectedResource.likes - 1;
+      // selectedResource.likes = selectedResource.likes - 1;
     } else {
       handleLike(true);
-      selectedResource.likes = selectedResource.likes + 1;
+      // selectedResource.likes = selectedResource.likes + 1;
     }
   };
 
   const handleThumbsDownClick = () => {
     if (likeStatus === false) {
       handleUnlike();
-      selectedResource.dislikes = selectedResource.dislikes - 1;
+      // selectedResource.dislikes = selectedResource.dislikes - 1;
     } else if (likeStatus === null) {
       handleLike(false);
-      selectedResource.dislikes = selectedResource.dislikes + 1;
+      // selectedResource.dislikes = selectedResource.dislikes + 1;
     }
   };
 
