@@ -195,11 +195,21 @@ function AddResourcePage({
   async function handlePostNewResource(newResource: INewResource) {
     if (currentUser !== undefined) {
       const reqBody = { ...newResource, author_id: currentUser.id };
-      console.log(`Expected resource for backend${JSON.stringify(reqBody)}`);
-      const res = await axios.post(`${baseUrl}/resources`, reqBody);
-      console.log("resource id:", res.data.data.id);
-      await handlePostResourcesTags(selectedTags, res.data.data.id);
-      getResources("resources");
+      // console.log(`Expected resource for backend${JSON.stringify(reqBody)}`);
+      try {
+        const res = await axios.post(`${baseUrl}/resources`, reqBody);
+        // console.log("resource id:", res.data.data.id);
+        await handlePostResourcesTags(selectedTags, res.data.data.id);
+        getResources("resources");
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response) {
+            showToastError(
+              `Resource with duplicate URL titled: ${e.response.data.data.title} already exists`
+            );
+          }
+        }
+      }
     } else {
       showToastError("Please sign in to add a resource");
     }
@@ -211,7 +221,6 @@ function AddResourcePage({
   ) {
     const reqBody = [];
     if (currentUser !== undefined) {
-      console.log("I am running!");
       for (const tag of selectedTags) {
         reqBody.push(tag.tag_id);
       }

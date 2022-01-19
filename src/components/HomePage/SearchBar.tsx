@@ -15,25 +15,6 @@ interface SearchBarProps {
   handleResetFilters: () => void;
 }
 
-// const contentType = [
-//   "Video",
-//   "Article",
-//   "Ebook",
-//   "Podcast",
-//   "Exercise",
-//   "Exercise Set",
-//   "Software Tool",
-//   "Course",
-//   "Diagram",
-//   "Cheat-Sheet",
-//   "Reference",
-//   "Resource List",
-//   "Youtube Channel",
-//   "Organisation",
-// ];
-
-// const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
-
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
@@ -51,6 +32,7 @@ export default function SearchBar({
     <>
       <div className="d-flex">
         <input
+          data-testid={`searchbar-input`}
           className="form-control me-2"
           type="search"
           placeholder="Search"
