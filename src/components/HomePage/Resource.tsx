@@ -20,6 +20,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
   const [likeStatus, setLikeStatus] = useState<boolean | null>(null); // change naming convention to thumbs down rather than dislike
+  const [addedToStudyList, setAddedToStudyList] = useState<boolean>(false);
 
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
   const showSignInError = (str: string) => {
@@ -28,7 +29,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
   };
 
   const showUnlikeError = (str: string) => {
-    toast.error(str);
+    currentUser && toast.error(str);
   };
 
   const handleAddComment = async (commentText: string) => {
@@ -81,6 +82,28 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
     }
   };
 
+  const handleToggleStudyList = async (added: boolean) => {
+    if (currentUser) {
+      if (!added) {
+        const res = await axios.post(
+          `${baseUrl}/study_list/${currentUser.id}`,
+          {
+            resource_id: resource.id,
+          }
+        );
+        console.log(res.data.data);
+      } else {
+        const res = await axios.delete(
+          `${baseUrl}/study_list/${currentUser.id}/${resource.id}`
+        );
+        console.log(res.data.data);
+      }
+      getStudyListStatus(`resources/${resource.id}/study_list`); // post request not working
+    }
+  };
+
+  // const handleRemoveFromStudyList = () => {};
+
   const getComments = useCallback(
     async (endpoint: string) => {
       const res = await axios.get(`${baseUrl}/${endpoint}`);
@@ -99,15 +122,27 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
     [baseUrl, currentUser?.id]
   );
 
+  const getStudyListStatus = useCallback(
+    async (endpoint: string) => {
+      if (currentUser) {
+        const res = await axios.get(`${baseUrl}/${endpoint}/${currentUser.id}`);
+        setAddedToStudyList(res.data.data);
+      }
+    },
+    [baseUrl, currentUser?.id]
+  );
+
   useEffect(() => {
     getComments(`resources/${resource.id}/comments`);
     // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
     getLikeStatus(`resources/${resource.id}/likes`);
+    getStudyListStatus(`resources/${resource.id}/study_list`);
     return () => {
       setComments([]);
       setLikeStatus(null);
+      setAddedToStudyList(false);
     };
-  }, [getComments, getLikeStatus, resource.id]);
+  }, [getComments, getLikeStatus, getStudyListStatus, resource.id]);
 
   return (
     <div className="resource" data-testid={`resource${resource.id}`}>
@@ -221,7 +256,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                     {resource.dislikes} 👎
                   </button>
                   {/* toggle for adding to to-study list */}
-                  <ReactTooltip delayShow={300} />
+                  <ReactTooltip delayShow={150} />
                   <div
                     className="add-study-list-toggle form-check form-switch"
                     data-tip="Toggle for adding to study list"
@@ -231,9 +266,40 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                         className="form-check-input"
                         type="checkbox"
                         role="switch"
-                        id="flexSwitchCheck"
+                        id="flexSwitchCheckChecked"
+                        onChange={() => {
+                          console.log("posting to study list");
+                          handleToggleStudyList(addedToStudyList);
+                          setAddedToStudyList(!addedToStudyList);
+                        }}
+                        checked={addedToStudyList}
                       />
                     ) : (
+                      // addedToStudyList ? (
+                      //   <input
+                      //     className="form-check-input"
+                      //     type="checkbox"
+                      //     role="switch"
+                      //     id="flexSwitchCheckChecked"
+                      //     onChange={() => {
+                      //       console.log("posting to study list");
+                      //       handleAddToStudyList();
+                      //       setAddedToStudyList(false);
+                      //     }}
+                      //     checked={addedToStudyList}
+                      //   />
+                      // ) : (
+                      //   <input
+                      //     className="form-check-input"
+                      //     type="checkbox"
+                      //     role="switch"
+                      //     id="flexSwitchCheckDefault"
+                      //     onChange={() => {
+                      //       console.log("posting to study list");
+                      //       setAddedToStudyList(true);
+                      //     }}
+                      //   />
+                      // )
                       <input
                         className="form-check-input"
                         type="checkbox"
