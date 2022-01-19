@@ -113,5 +113,51 @@ describe("Navbar content is correct", () => {
         .should("have.text", "Close")
       });
 
-    
+//Filter functionality
+    it("Filter modal actually filters", () => {
+        cy.get("[data-cy=filter]")
+        .should("have.text", "Filter")
+        .click()
+        cy.get("[data-cy=filter-modal-title]")
+        .should("have.text", "Set Filters")
+        //via content type
+        cy.get("[data-cy=content-type-filter-list]")
+        .find("input")
+        .eq(7)
+        .click()
+        cy.get("[data-cy=resources]")
+        .find("[data-cy=individual-resource]")
+        .should("have.length", 1)
+        .should("have.text", "Test 1")
+        //via recommendation value
+        //unclicking content type first
+        cy.get("[data-cy=content-type-filter-list]")
+        .find("input")
+        .eq(7)
+        .click()
+        cy.get("[data-cy=recommendation-value-list-filter]")
+        .find("input")
+        .eq(1)
+        .click()
+        cy.get("[data-cy=resources]")
+        .find("[data-cy=individual-resource]")
+        .should("have.length", 3)
+        .eq(1)
+        .should("have.text", "Beri rules")
+        //via tags
+         //unclicking recommendation value first
+         cy.get("[data-cy=recommendation-value-list-filter]")
+         .find("input")
+         .eq(1)
+         .click()
+         cy.get("[data-cy=unselected-tags-list-filter]")
+         .find("span")
+         .first()
+         .click()
+         cy.get("[data-cy=resources]")
+         .find("[data-cy=individual-resource]")
+         .should("have.length", 2)
+         .first()
+         .should("have.text", "CSS tricks")
+    })
 })

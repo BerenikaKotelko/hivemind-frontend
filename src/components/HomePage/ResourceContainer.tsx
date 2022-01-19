@@ -39,7 +39,7 @@ function ResourceContainer({
   );
 
   return (
-    <div>
+    <div data-cy="resources">
       {filteredResources.map((resource, idx) => (
         <Resource
           key={idx}
