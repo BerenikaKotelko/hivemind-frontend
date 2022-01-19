@@ -55,7 +55,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
             </ul>
           </div>
           {!currentUser ? (
-            <div className="dropstart">
+            <div className="dropstart" data-testid={`navbar-sign-in`}>
               <button
                 className="sign-in-btn btn btn-success btn-sm dropdown-toggle"
                 type="button"
@@ -68,10 +68,12 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
               <ul
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton1"
+                data-testid={`navbar-users-dropdown`}
               >
                 {users.map((user) => (
                   <li key={user.id}>
                     <button
+                      data-testid={`navbar-user-${user.id}`}
                       type="button"
                       className="dropdown-item"
                       onClick={() => {
@@ -95,6 +97,7 @@ function NavBar({ users, currentUser, setCurrentUser }: NavBarProps) {
               </div>
               <button
                 className="sign-out-btn btn btn-danger btn-sm"
+                data-testid={`navbar-sign-out`}
                 onClick={() => setCurrentUser(undefined)}
               >
                 Sign out
