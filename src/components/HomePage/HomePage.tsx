@@ -9,6 +9,7 @@ import axios from "axios";
 interface HomePageProps {
   currentUser: IUser | undefined;
   resources: IResource[];
+  getResources: (endpoint: string) => void;
 }
 
 const defaultRecommendations = {
@@ -34,7 +35,7 @@ const defaultContentTypes = {
   "Youtube Channel": false,
 };
 
-function HomePage({ currentUser, resources }: HomePageProps) {
+function HomePage({ currentUser, resources, getResources }: HomePageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [unselectedTags, setUnselectedTags] = useState<ITag[]>([]);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
@@ -113,6 +114,7 @@ function HomePage({ currentUser, resources }: HomePageProps) {
         recommendationValue={recommendations}
         contentType={contentTypes}
         selectedTags={selectedTags}
+        getResources={getResources}
       />
     </div>
   );

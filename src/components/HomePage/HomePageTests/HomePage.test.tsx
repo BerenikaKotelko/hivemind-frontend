@@ -4,8 +4,18 @@ import "@testing-library/jest-dom";
 // the component to test
 import HomePage from "../HomePage";
 import { render, screen } from "@testing-library/react";
+import { useCallback } from "react";
+import axios from "axios";
 // import Resource from "../Resource";
 // import SearchBar from "../SearchBar";
+
+// const tags = [
+//   { tag_id: 1, tag_name: "Javascript" },
+//   { tag_id: 2, tag_name: "Hooks" },
+//   { tag_id: 3, tag_name: "Testing" },
+// ];
+
+const baseUrl = process.env.REACT_APP_API_URL;
 
 const props = {
   currentUser: {
@@ -13,11 +23,6 @@ const props = {
     name: "Mike",
     is_faculty: false,
   },
-  tags: [
-    { tag_id: 1, tag_name: "Javascript" },
-    { tag_id: 2, tag_name: "Hooks" },
-    { tag_id: 3, tag_name: "Testing" },
-  ],
 
   resources: [
     {
@@ -85,6 +90,9 @@ const props = {
       ],
     },
   ],
+  getResources: (endpoint: string) => {
+    const str = endpoint; // random operation that doesn't return anything
+  },
   // comments: [
   //   {
   //     comment_id: 5,

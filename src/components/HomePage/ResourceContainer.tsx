@@ -11,6 +11,7 @@ interface ResourceContainerProps {
   recommendationValue: { [key: string]: boolean };
   contentType: { [key: string]: boolean };
   selectedTags: ITag[];
+  getResources: (endpoint: string) => void;
 }
 
 function ResourceContainer({
@@ -20,6 +21,7 @@ function ResourceContainer({
   recommendationValue,
   contentType,
   selectedTags,
+  getResources,
 }: ResourceContainerProps) {
   const filteredResources = resources.filter((resource) =>
     filterResourceWithFilters(
@@ -39,7 +41,12 @@ function ResourceContainer({
   return (
     <div>
       {filteredResources.map((resource, idx) => (
-        <Resource key={idx} resource={resource} currentUser={currentUser} />
+        <Resource
+          key={idx}
+          resource={resource}
+          currentUser={currentUser}
+          getResources={getResources}
+        />
       ))}
     </div>
   );

@@ -76,7 +76,13 @@ function App() {
         {/* different pages */}
         <Route
           path="/"
-          element={<HomePage resources={resources} currentUser={currentUser} />}
+          element={
+            <HomePage
+              resources={resources}
+              currentUser={currentUser}
+              getResources={getResources}
+            />
+          }
         />
         <Route
           path="study-list"
