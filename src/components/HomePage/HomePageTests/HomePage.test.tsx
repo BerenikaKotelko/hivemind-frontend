@@ -9,11 +9,11 @@ import axios from "axios";
 // import Resource from "../Resource";
 // import SearchBar from "../SearchBar";
 
-const tags = [
-  { tag_id: 1, tag_name: "Javascript" },
-  { tag_id: 2, tag_name: "Hooks" },
-  { tag_id: 3, tag_name: "Testing" },
-];
+// const tags = [
+//   { tag_id: 1, tag_name: "Javascript" },
+//   { tag_id: 2, tag_name: "Hooks" },
+//   { tag_id: 3, tag_name: "Testing" },
+// ];
 
 const baseUrl = process.env.REACT_APP_API_URL;
 
@@ -90,13 +90,9 @@ const props = {
       ],
     },
   ],
-  getResources: useCallback(
-    async (endpoint: string) => {
-      const res = await axios.get(`${baseUrl}/${endpoint}`);
-      console.log(res.data);
-    },
-    [baseUrl]
-  ),
+  getResources: (endpoint: string) => {
+    const str = endpoint; // random operation that doesn't return anything
+  },
   // comments: [
   //   {
   //     comment_id: 5,
