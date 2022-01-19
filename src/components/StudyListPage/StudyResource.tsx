@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { IComment } from "../../interfaces/IComment";
 import { IStudyListResource } from "../../interfaces/IResource";
 import { IUser } from "../../interfaces/IUser";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 interface StudyListResourceProps {
@@ -21,6 +22,7 @@ export default function StudyListResource({
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentText, setCommentText] = useState("");
+  const [likeStatus, setLikeStatus] = useState<boolean | null>(null); // change naming convention to thumbs down rather than dislike
   const baseUrl = process.env.REACT_APP_API_URL ?? "https://localhost:4000";
 
   const handleAddComment = async (commentText: string) => {
@@ -33,6 +35,64 @@ export default function StudyListResource({
       setCommentText("");
     }
   };
+
+  const showUnlikeError = (str: string) => {
+    currentUser && toast.error(str);
+  };
+
+  const handleLike = async (liked: boolean) => {
+    if (currentUser) {
+      const res = await axios.post(
+        `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`,
+        { liked }
+      );
+      console.log(res.data.data);
+      getStudyList("study_list");
+      getLikeStatus(`resources/${selectedResource.id}/likes`);
+    }
+  };
+
+  const handleUnlike = async () => {
+    if (currentUser) {
+      const res = await axios.delete(
+        `${baseUrl}/resources/${selectedResource.id}/likes/${currentUser.id}`
+      );
+      console.log(res.data.data);
+      getStudyList("study_list");
+      getLikeStatus(`resources/${selectedResource.id}/likes`);
+    }
+  };
+
+  const handleThumbsUpClick = () => {
+    if (likeStatus) {
+      handleUnlike()
+      selectedResource.likes = selectedResource.likes - 1;
+    } else {
+      handleLike(true)
+      selectedResource.likes = selectedResource.likes + 1;
+    }
+  };
+
+  const handleThumbsDownClick = () => {
+    if (likeStatus === false) {
+      handleUnlike()
+      selectedResource.dislikes = selectedResource.dislikes - 1;
+    } else if (likeStatus === null) {
+      handleLike(false)
+      // selectedResource.dislikes = selectedResource.dislikes + 1;
+    }
+  };
+
+  const getLikeStatus = useCallback(
+    async (endpoint: string) => {
+      if (currentUser) {
+        const res = await axios.get(`${baseUrl}/${endpoint}/${currentUser.id}`);
+        setLikeStatus(res.data.data);
+      }
+    },
+    [baseUrl, currentUser]
+  );
+
 
   const getComments = useCallback(
     async (endpoint: string) => {
@@ -60,11 +120,12 @@ export default function StudyListResource({
   useEffect(() => {
     getComments(`resources/${selectedResource.id}/comments`);
     setExpanded(false);
+    getLikeStatus(`resources/${selectedResource.id}/likes`)
     // For 60-63: https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
     return () => {
       setComments([]);
     };
-  }, [getComments, selectedResource.id]);
+  }, [getComments, selectedResource.id, getLikeStatus, likeStatus]);
 
   return (
     <div>
@@ -90,12 +151,30 @@ export default function StudyListResource({
             <button
               type="button"
               className="header-button btn btn-outline-warning"
+              style={{
+                color: likeStatus ? "black" : "#f7b950",
+                backgroundColor: likeStatus ? "#ffdd99" : "white",
+              }}
+              onClick={() => {
+                handleThumbsUpClick();
+                likeStatus === false &&
+                  showUnlikeError("Undislike before liking!");
+              }}
             >
               {selectedResource.likes} 👍
             </button>
             <button
               type="button"
               className="header-button btn btn-outline-warning"
+              style={{
+                color: likeStatus === false ? "black" : "#f7b950",
+                backgroundColor:
+                  likeStatus === false ? "#ffdd99" : "white",
+              }}
+              onClick={() => {
+                handleThumbsDownClick();
+                likeStatus && showUnlikeError("Unlike before disliking!");
+              }}
             >
               {selectedResource.dislikes} 👎
             </button>
