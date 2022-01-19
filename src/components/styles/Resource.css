@@ -8,12 +8,12 @@
   align-items: baseline;
 }
 
-.title-study-list-elements{
-  display:flex;
+.title-study-list-elements {
+  display: flex;
   align-items: baseline;
 }
 
-.add-to-study-list-text{
+.add-to-study-list-text {
   margin-right: 10px;
 }
 

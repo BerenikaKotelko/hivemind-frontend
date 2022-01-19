@@ -316,7 +316,6 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                   >
                     {resource.dislikes} 👎
                   </button>
-
                 </div>
               </div>
               <h5>{resource.type}</h5>

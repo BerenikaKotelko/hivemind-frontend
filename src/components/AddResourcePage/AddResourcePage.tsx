@@ -499,9 +499,9 @@ function AddResourcePage({
                 ifEmptyInputs
                   ? () => showToastError("Please add inputs for every field")
                   : () => {
-                    handlePostNewResource(newResource);
-                    // handlePostResourcesTags(selectedTags, latestResourceId);
-                  }
+                      handlePostNewResource(newResource);
+                      // handlePostResourcesTags(selectedTags, latestResourceId);
+                    }
               }
             >
               Submit new resource
