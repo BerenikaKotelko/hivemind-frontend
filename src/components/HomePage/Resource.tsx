@@ -119,7 +119,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
         setLikeStatus(res.data.data);
       }
     },
-    [baseUrl, currentUser?.id]
+    [baseUrl, currentUser]
   );
 
   const getStudyListStatus = useCallback(
@@ -129,7 +129,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
         setAddedToStudyList(res.data.data);
       }
     },
-    [baseUrl, currentUser?.id]
+    [baseUrl, currentUser]
   );
 
   useEffect(() => {
