@@ -176,7 +176,7 @@ export default function SearchBar({
                   ))}
                 </div>
                 <hr className="dropdown-divider" />
-                <div className="selectedTags">
+                <div className="selectedTags" data-cy="selected-tags">
                   <p>Selected tags: </p>
                   {selectedTags.map((tag, index) => (
                     <span
@@ -199,6 +199,7 @@ export default function SearchBar({
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
                   onClick={handleResetFilters}
+                  data-cy="reset-filters-button"
                 >
                   Reset filters
                 </button>
@@ -206,6 +207,7 @@ export default function SearchBar({
                   type="button"
                   className="btn btn-secondary btn-sm"
                   data-bs-dismiss="modal"
+                  data-cy="close-button"
                 >
                   Close
                 </button>

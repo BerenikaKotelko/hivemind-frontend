@@ -74,7 +74,7 @@ describe("Navbar content is correct", () => {
       });
 
     //Filter Tests
-    it("Filter button says 'filter' and can be clicked to reveal modal", () => {
+    it("Filter modal fully functional: filter button; content type; recommendation value; tags; reset; close", () => {
          //is there a filter button that says 'Filter'
         cy.get("[data-cy=filter]")
         .should("have.text", "Filter")
@@ -100,6 +100,18 @@ describe("Navbar content is correct", () => {
         .should("have.length.greaterThan", 10)
         .eq(3)
         .should("have.text", "SQL")
+        //Is there a Reset Filters button with the title 'reset filter'
+        cy.get("[data-cy=reset-filters-button]")
+        .should("have.text", "Reset filters")
+        //When it is clicked, does it clear 'selected tags'
+        .click()
+        cy.get("[data-cy=selected-tags]")
+        .find("span")
+        .should("have.length", 0)
+        //Is there a close button that says 'close'
+        cy.get("[data-cy=close-button")
+        .should("have.text", "Close")
       });
+
     
 })
