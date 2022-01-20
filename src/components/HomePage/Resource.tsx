@@ -150,9 +150,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
         <div className="card-body">
           <div className="card-title">
             <div className="card-title-main">
-              <title>
-                <h5>{resource.title}</h5>
-              </title>
+              <h5 data-cy="individual-resource">{resource.title}</h5>
               <em>
                 <small className="text-muted">
                   submitted by: {resource.name}

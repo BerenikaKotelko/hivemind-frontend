@@ -39,12 +39,14 @@ export default function SearchBar({
           aria-label="Search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          data-cy="search-bar"
         />
         <button
           className="btn btn-outline-primary filter-btn"
           type="submit"
           data-bs-toggle="modal"
           data-bs-target="#filterModal"
+          data-cy="filter"
           data-testid={`searchbar-filter-button`}
         >
           Filter
@@ -61,7 +63,11 @@ export default function SearchBar({
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="staticBackdropLabel">
+                <h5
+                  className="modal-title"
+                  id="staticBackdropLabel"
+                  data-cy="filter-modal-title"
+                >
                   Set Filters
                 </h5>
                 {/* <button
@@ -73,7 +79,7 @@ export default function SearchBar({
               </div>
               <div className="modal-body">
                 <h6>Resource Type</h6>
-                <div className="filterType">
+                <div className="filterType" data-cy="content-type-filter-list">
                   {Object.entries(contentType).map(
                     ([contentKey, contentValue], index) => {
                       return (
@@ -106,7 +112,10 @@ export default function SearchBar({
                   )}
                 </div>
                 <h6>Recommendation Value</h6>
-                <div className="filterRecommendations">
+                <div
+                  className="filterRecommendations"
+                  data-cy="recommendation-value-list-filter"
+                >
                   {Object.entries(recommendationValue).map(
                     ([recKey, recValue], index) => {
                       return (
@@ -139,7 +148,10 @@ export default function SearchBar({
                   )}
                 </div>
                 <hr className="dropdown-divider" />
-                <div className="filterTags">
+                <div
+                  className="filterTags"
+                  data-cy="unselected-tags-list-filter"
+                >
                   {unselectedTags.map((tag, index) => (
                     <span
                       key={index}
@@ -155,7 +167,7 @@ export default function SearchBar({
                   ))}
                 </div>
                 <hr className="dropdown-divider" />
-                <div className="selectedTags">
+                <div className="selectedTags" data-cy="selected-tags">
                   <p>Selected tags: </p>
                   {selectedTags.map((tag, index) => (
                     <span
@@ -178,6 +190,7 @@ export default function SearchBar({
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
                   onClick={handleResetFilters}
+                  data-cy="reset-filters-button"
                   data-testid={`searchbar-reset-filter-button`}
                 >
                   Reset filters
@@ -186,6 +199,7 @@ export default function SearchBar({
                   type="button"
                   className="btn btn-secondary btn-sm"
                   data-bs-dismiss="modal"
+                  data-cy="close-button"
                 >
                   Close
                 </button>
