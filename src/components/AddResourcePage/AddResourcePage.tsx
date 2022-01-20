@@ -195,7 +195,6 @@ function AddResourcePage({
       try {
         const res = await axios.post(`${baseUrl}/resources`, reqBody);
         await handlePostResourcesTags(selectedTags, res.data.data.id);
-        getResources("resources");
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response) {
@@ -219,9 +218,10 @@ function AddResourcePage({
       for (const tag of selectedTags) {
         reqBody.push(tag.tag_id);
       }
-      axios.post(`${baseUrl}/resources/${resource_id}/tags`, {
+      await axios.post(`${baseUrl}/resources/${resource_id}/tags`, {
         tag_ids: reqBody,
       });
+      getResources("resources");
       navigate("/");
     } /*else {
       showToastError("Please sign in to add a resource");
@@ -497,9 +497,9 @@ function AddResourcePage({
                 ifEmptyInputs
                   ? () => showToastError("Please add inputs for every field")
                   : () => {
-                      handlePostNewResource(newResource);
-                      // handlePostResourcesTags(selectedTags, latestResourceId);
-                    }
+                    handlePostNewResource(newResource);
+                    // handlePostResourcesTags(selectedTags, latestResourceId);
+                  }
               }
             >
               Submit new resource
