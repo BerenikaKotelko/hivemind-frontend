@@ -58,36 +58,14 @@ it("should call setSearchTerm when user types into input", () => {
   expect(SearchBarProps.setSearchTerm).toHaveBeenCalled();
 });
 
-// it("should display sign out button and fire setCurrentUser when clicked", () => {
-//   const NavBarPropsWithCurrentUser = {
-//     ...NavBarProps,
-//     currentUser: {
-//       id: 1,
-//       name: "John Doe",
-//       is_faculty: false,
-//     },
-//   };
-//   render(
-//     <Router>
-//       <NavBar {...NavBarPropsWithCurrentUser} />
-//     </Router>
-//   );
-//   const signOutButton = screen.getByTestId(`navbar-sign-out`);
-//   expect(signOutButton).toHaveTextContent("Sign out");
-
-//   fireEvent.click(signOutButton);
-//   expect(NavBarProps.setCurrentUser).toHaveBeenCalled();
-// });
-
-// it("Displayed user names should match incoming props user names", () => {
-//   render(
-//     <Router>
-//       <NavBar {...NavBarProps} />
-//     </Router>
-//   );
-
-//   const firstUser = screen.getByTestId("navbar-user-1");
-//   expect(firstUser).toHaveTextContent("John Doe");
-//   const secondUser = screen.getByTestId("navbar-user-2");
-//   expect(secondUser).toHaveTextContent("Jane Doe");
-// });
+it("should call handleResetFilters when user clicks reset filter button", async () => {
+  render(
+    <Router>
+      <SearchBar {...SearchBarProps} />
+    </Router>
+  );
+  const resetFilterButton = screen.getByTestId("searchbar-reset-filter-button");
+  expect(resetFilterButton).toHaveTextContent("Reset filters");
+  fireEvent.click(resetFilterButton);
+  expect(SearchBarProps.handleResetFilters).toHaveBeenCalled();
+});

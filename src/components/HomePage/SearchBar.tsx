@@ -45,6 +45,7 @@ export default function SearchBar({
           type="submit"
           data-bs-toggle="modal"
           data-bs-target="#filterModal"
+          data-testid={`searchbar-filter-button`}
         >
           Filter
         </button>
@@ -55,6 +56,7 @@ export default function SearchBar({
           data-bs-keyboard="false"
           aria-labelledby="filterModalLabel"
           aria-hidden="true"
+          data-testid={`searchbar-filter-modal`}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -176,6 +178,7 @@ export default function SearchBar({
                   className="btn btn-success btn-sm"
                   data-bs-dismiss="modal"
                   onClick={handleResetFilters}
+                  data-testid={`searchbar-reset-filter-button`}
                 >
                   Reset filters
                 </button>
