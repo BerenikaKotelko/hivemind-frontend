@@ -1,14 +1,21 @@
 describe("Navbar content is correct", () => {
+    //line 1 should probably say 'homePage', and NavBar should maybe have another file. 
+    //Also, what is 'correct'...?
     beforeEach(() => {
       cy.visit("/");
     });
     it("displays the title", () => {
+        //maybe slightly more specific? 'Display Hivemind as the title'. Descripction should be able to tell you if the tst is correct.
       cy.get("[data-cy=page-title]").should("have.text", "🐝 Hivemind");
+      //don't use data-cy in case you decide to change the testing framework. Target the h1. 
     });
     it("3 links in nav buttons", () => {
       cy.get("[data-cy=nav-buttons]").find("li").should("have.length", 3);
+      //Accesibility - use a nav ement and target it. OR use data-test, this makes it agnostic to the test framework.
+    // can also use classNames? This is not as explicit, so they could b changd by accident. do NOT use id's
     });
-    it("display sign-in and displays list-of-users when sign-in clicked AND cn click on user and see them signed in AND there is a sign out button", () => {
+    it("displays sign-in and displays list-of-users when sign-in clicked AND can click on user and see them signed in AND there is a sign out button", () => {
+        //you can have multiple assertions as long as they are testing ONE logical claim.
         cy.get("[data-cy=sign-in]")
         .should("have.text", "Sign in")
         .click();
@@ -38,6 +45,7 @@ describe("Navbar content is correct", () => {
         cy.url()
         .should("include", "/add-resource")
     })
+    //this is good. Could possibly get more specific - the test is stronger then.
 
 
      //The 'study list' tab contains the corrct text and can be visited upon clicking 
@@ -115,6 +123,7 @@ describe("Navbar content is correct", () => {
 
 //Filter functionality
     it("Filter modal actually filters", () => {
+        //what does that mean... better names!
         cy.get("[data-cy=filter]")
         .should("have.text", "Filter")
         .click()
@@ -134,6 +143,8 @@ describe("Navbar content is correct", () => {
         cy.get("[data-cy=content-type-filter-list]")
         .find("input")
         .eq(7)
+        //any time you use a number, specify where it comes from, or person reading code would be confused.
+        //use variable? Better than comment. 
         .click()
         cy.get("[data-cy=recommendation-value-list-filter]")
         .find("input")
