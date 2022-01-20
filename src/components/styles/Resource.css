@@ -8,6 +8,15 @@
   align-items: baseline;
 }
 
+.title-study-list-elements {
+  display: flex;
+  align-items: baseline;
+}
+
+.add-to-study-list-text {
+  margin-right: 10px;
+}
+
 .resource-details {
   display: flex;
   align-items: baseline;

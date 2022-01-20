@@ -15,25 +15,6 @@ interface SearchBarProps {
   handleResetFilters: () => void;
 }
 
-// const contentType = [
-//   "Video",
-//   "Article",
-//   "Ebook",
-//   "Podcast",
-//   "Exercise",
-//   "Exercise Set",
-//   "Software Tool",
-//   "Course",
-//   "Diagram",
-//   "Cheat-Sheet",
-//   "Reference",
-//   "Resource List",
-//   "Youtube Channel",
-//   "Organisation",
-// ];
-
-// const recommendationValue = ["Un-bee-table", "May-bee", "Buzzkill"];
-
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
@@ -51,6 +32,7 @@ export default function SearchBar({
     <>
       <div className="d-flex">
         <input
+          data-testid={`searchbar-input`}
           className="form-control me-2"
           type="search"
           placeholder="Search"
@@ -65,6 +47,7 @@ export default function SearchBar({
           data-bs-toggle="modal"
           data-bs-target="#filterModal"
           data-cy="filter"
+          data-testid={`searchbar-filter-button`}
         >
           Filter
         </button>
@@ -75,6 +58,7 @@ export default function SearchBar({
           data-bs-keyboard="false"
           aria-labelledby="filterModalLabel"
           aria-hidden="true"
+          data-testid={`searchbar-filter-modal`}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -207,6 +191,7 @@ export default function SearchBar({
                   data-bs-dismiss="modal"
                   onClick={handleResetFilters}
                   data-cy="reset-filters-button"
+                  data-testid={`searchbar-reset-filter-button`}
                 >
                   Reset filters
                 </button>

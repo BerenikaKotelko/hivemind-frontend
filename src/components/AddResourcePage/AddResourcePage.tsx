@@ -181,9 +181,6 @@ function AddResourcePage({
   ) {
     setNewTag("");
     setNewTags([]);
-    console.log(newTags);
-    console.log({ tags: newTags });
-    console.log({ tags: [newTags] });
     await axios.post(`${baseUrl}/tags`, { tags: newTags });
     getTags("tags");
     closeModal();
@@ -195,11 +192,18 @@ function AddResourcePage({
   async function handlePostNewResource(newResource: INewResource) {
     if (currentUser !== undefined) {
       const reqBody = { ...newResource, author_id: currentUser.id };
-      console.log(`Expected resource for backend${JSON.stringify(reqBody)}`);
-      const res = await axios.post(`${baseUrl}/resources`, reqBody);
-      console.log("resource id:", res.data.data.id);
-      await handlePostResourcesTags(selectedTags, res.data.data.id);
-      getResources("resources");
+      try {
+        const res = await axios.post(`${baseUrl}/resources`, reqBody);
+        await handlePostResourcesTags(selectedTags, res.data.data.id);
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response) {
+            showToastError(
+              `Resource with duplicate URL titled: ${e.response.data.data.title} already exists`
+            );
+          }
+        }
+      }
     } else {
       showToastError("Please sign in to add a resource");
     }
@@ -211,13 +215,13 @@ function AddResourcePage({
   ) {
     const reqBody = [];
     if (currentUser !== undefined) {
-      console.log("I am running!");
       for (const tag of selectedTags) {
         reqBody.push(tag.tag_id);
       }
-      axios.post(`${baseUrl}/resources/${resource_id}/tags`, {
+      await axios.post(`${baseUrl}/resources/${resource_id}/tags`, {
         tag_ids: reqBody,
       });
+      getResources("resources");
       navigate("/");
     } /*else {
       showToastError("Please sign in to add a resource");
@@ -276,6 +280,7 @@ function AddResourcePage({
                 className="form-control"
                 aria-label="Input description"
                 data-testid="add-resource-input-description"
+                aria-required="true"
                 value={newResource.description}
                 onChange={(e) =>
                   handleAddNewResource(
@@ -298,6 +303,7 @@ function AddResourcePage({
                 className="form-control"
                 aria-label="Input URL"
                 data-testid="add-resource-input-url"
+                aria-required="true"
                 value={newResource.url}
                 onChange={(e) => handleAddNewResource("url", e.target.value)}
               />
@@ -311,6 +317,7 @@ function AddResourcePage({
               <select
                 className="form-select"
                 id="inputGroupSelect01"
+                aria-required="true"
                 defaultValue="0"
                 data-testid="add-resource-type"
                 onChange={(e) => handleAddNewResource("type", e.target.value)}
@@ -331,6 +338,7 @@ function AddResourcePage({
                 className="form-select"
                 id="inputGroupSelect01"
                 defaultValue="0"
+                aria-required="true"
                 data-testid="add-resource-recommendability"
                 onChange={(e) =>
                   handleAddNewResource("recommended", e.target.value)
@@ -351,6 +359,7 @@ function AddResourcePage({
               <select
                 className="form-select"
                 id="inputGroupSelect01"
+                aria-required="true"
                 defaultValue="0"
                 data-testid="add-resource-week"
                 onChange={(e) => handleAddNewResource("week", e.target.value)}
@@ -368,6 +377,7 @@ function AddResourcePage({
                 <span
                   data-testid={`add-resource-tag-${tag.tag_id}`}
                   key={tag.tag_id}
+                  aria-required="true"
                   style={{ backgroundColor: tag.tag_colour }}
                   className="tag-badge badge rounded-pill"
                   onClick={() => handleTagClick(tag)}
@@ -409,6 +419,7 @@ function AddResourcePage({
                   <div className="input-group mb-3">
                     <input
                       type="text"
+                      aria-required="true"
                       className="form-control"
                       placeholder="Input tag"
                       aria-label="Input new tag"
@@ -416,12 +427,6 @@ function AddResourcePage({
                       onChange={(e) => handleNewTag(e.target.value)}
                     />
                   </div>
-                  {/* <input
-           placeholder="Input tag"
-           type="text"
-           aria-label="Add a new tag"
-           value={newTag}
-           onChange={(e) => handleNewTag(e.target.value)}></input> */}
                   <div className="input-group input-group-m mb-3">
                     <label
                       className="input-group-text"
@@ -433,6 +438,7 @@ function AddResourcePage({
                       className="form-select"
                       id="inputGroupSelect01"
                       defaultValue="0"
+                      aria-required="true"
                       data-testid="add-resource-recommendability"
                       onChange={(e) => handleNewTagColour(e.target.value)}
                     >
