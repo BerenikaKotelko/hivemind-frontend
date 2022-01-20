@@ -189,7 +189,7 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
               data-bs-toggle="modal"
               data-bs-target={`#resourceModal${resource.id}`}
             >
-              🎈 Expand
+              Click to expand resource
             </button>
           </div>
         </div>
@@ -213,6 +213,67 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button> */}
+              <div className="title-study-list-elements">
+                <p className="add-to-study-list-text"> Add to study list</p>
+                {/* toggle for adding to to-study list */}
+                <ReactTooltip delayShow={150} />
+                <div
+                  className="add-study-list-toggle form-check form-switch"
+                  data-tip="Toggle for adding to study list"
+                >
+                  {currentUser ? (
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckChecked"
+                      onChange={() => {
+                        console.log("posting to study list");
+                        handleToggleStudyList(addedToStudyList);
+                        setAddedToStudyList(!addedToStudyList);
+                      }}
+                      checked={addedToStudyList}
+                    />
+                  ) : (
+                    // addedToStudyList ? (
+                    //   <input
+                    //     className="form-check-input"
+                    //     type="checkbox"
+                    //     role="switch"
+                    //     id="flexSwitchCheckChecked"
+                    //     onChange={() => {
+                    //       console.log("posting to study list");
+                    //       handleAddToStudyList();
+                    //       setAddedToStudyList(false);
+                    //     }}
+                    //     checked={addedToStudyList}
+                    //   />
+                    // ) : (
+                    //   <input
+                    //     className="form-check-input"
+                    //     type="checkbox"
+                    //     role="switch"
+                    //     id="flexSwitchCheckDefault"
+                    //     onChange={() => {
+                    //       console.log("posting to study list");
+                    //       setAddedToStudyList(true);
+                    //     }}
+                    //   />
+                    // )
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckDisabled"
+                      disabled
+                    />
+                  )}
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexSwitchCheck"
+                  ></label>
+                </div>
+              </div>
             </div>
             <div className="modal-body">
               <div className="resource-header">
@@ -255,64 +316,6 @@ function Resource({ resource, currentUser, getResources }: ResourceProps) {
                   >
                     {resource.dislikes} 👎
                   </button>
-                  {/* toggle for adding to to-study list */}
-                  <ReactTooltip delayShow={150} />
-                  <div
-                    className="add-study-list-toggle form-check form-switch"
-                    data-tip="Toggle for adding to study list"
-                  >
-                    {currentUser ? (
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="flexSwitchCheckChecked"
-                        onChange={() => {
-                          console.log("posting to study list");
-                          handleToggleStudyList(addedToStudyList);
-                          setAddedToStudyList(!addedToStudyList);
-                        }}
-                        checked={addedToStudyList}
-                      />
-                    ) : (
-                      // addedToStudyList ? (
-                      //   <input
-                      //     className="form-check-input"
-                      //     type="checkbox"
-                      //     role="switch"
-                      //     id="flexSwitchCheckChecked"
-                      //     onChange={() => {
-                      //       console.log("posting to study list");
-                      //       handleAddToStudyList();
-                      //       setAddedToStudyList(false);
-                      //     }}
-                      //     checked={addedToStudyList}
-                      //   />
-                      // ) : (
-                      //   <input
-                      //     className="form-check-input"
-                      //     type="checkbox"
-                      //     role="switch"
-                      //     id="flexSwitchCheckDefault"
-                      //     onChange={() => {
-                      //       console.log("posting to study list");
-                      //       setAddedToStudyList(true);
-                      //     }}
-                      //   />
-                      // )
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="flexSwitchCheckDisabled"
-                        disabled
-                      />
-                    )}
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexSwitchCheck"
-                    ></label>
-                  </div>
                 </div>
               </div>
               <h5>{resource.type}</h5>
